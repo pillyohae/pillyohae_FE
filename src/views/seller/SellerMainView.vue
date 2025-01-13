@@ -6,7 +6,7 @@
             <v-spacer></v-spacer>
             <!-- 네비게이션 메뉴 -->
             <v-btn text to="/seller">홈</v-btn>
-            <v-btn text to="#">내 상품 보기</v-btn>
+            <v-btn text to="/seller/product">내 상품 보기</v-btn>
             <v-btn text to="#">요청 주문</v-btn>
             <!-- 로그아웃 버튼 -->
             <v-btn text color="red" @click="logout">로그아웃</v-btn>

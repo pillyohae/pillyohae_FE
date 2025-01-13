@@ -7,6 +7,7 @@ import SignupView from "../views/SignupView.vue"; //회원가입 페이지
 import BuyerMainView from "../views/buyer/BuyerMainView.vue";
 import CartView from "../views/buyer/CartView.vue";
 import SellerMainView from "../views/seller/SellerMainView.vue";
+import SellerMyView from "../views/seller/SellerMyView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것
@@ -17,6 +18,7 @@ const routes = [
     { path: '/buyer', name: 'BuyerMain', component: BuyerMainView},
     { path: '/cart', name: 'Cart', component: CartView},
     { path: '/seller', name: 'Seller', component: SellerMainView},
+    { path: '/seller/product', name: 'MySeller', component: SellerMyView},
 ]
 
 //Vue router 인스턴스 생성
