@@ -5,7 +5,7 @@
         <v-toolbar-title>Pill요해?</v-toolbar-title>
         <v-spacer></v-spacer>
         <!-- 네비게이션 메뉴 -->
-        <v-btn text to="/product">홈</v-btn>
+        <v-btn text to="/buyer">홈</v-btn>
         <v-btn text to="#">설문</v-btn>
         <v-btn text to="/cart">장바구니</v-btn>
         <v-btn text to="#">마이페이지</v-btn>
@@ -24,8 +24,8 @@
   </template>
   
   <script>
-  import ProductForm from '../components/BuyerProductForm.vue'; // 상품 표시 컴포넌트 가져오기
-  import api from '../api/axios'; // 서버와 통신을 위한 Axios 가져오기
+  import ProductForm from '../../components/buyer/BuyerProductForm.vue'; // 상품 표시 컴포넌트 가져오기
+  import api from '../../api/axios'; // 서버와 통신을 위한 Axios 가져오기
   
   export default {
     components: { ProductForm }, // ProductForm 등록

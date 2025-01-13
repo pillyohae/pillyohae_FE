@@ -4,7 +4,8 @@ import { createRouter, createWebHistory } from "vue-router";
 //페이지를 import 하는 란
 import LoginView from "../views/LoginView.vue"; //로그인 페이지
 import SignupView from "../views/SignupView.vue"; //회원가입 페이지
-import BuyerMainView from "../views/BuyerMainView.vue";
+import BuyerMainView from "../views/buyer/BuyerMainView.vue";
+import CartView from "../views/buyer/CartView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것
@@ -13,6 +14,8 @@ const routes = [
     { path: '/login', name: 'Login', component: LoginView },
     { path: '/signup', name : 'Signup', component: SignupView},
     { path: '/buyer', name: 'BuyerMain', component: BuyerMainView},
+    { path: '/cart', name: 'Cart', component: CartView},
+    
 ]
 
 //Vue router 인스턴스 생성

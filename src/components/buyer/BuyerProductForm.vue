@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import api from '../../api/axios'; // 서버와 통신을 위한 Axios 가져오기
 export default {
     props: {
         products: {
