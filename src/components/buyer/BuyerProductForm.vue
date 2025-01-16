@@ -5,7 +5,7 @@
             <v-col v-for="product in products" :key="product.productId" cols="12" md="4">
                 <v-card>
                     <!-- 상품 이미지 -->
-                    <v-img :src="product.image || 'https://via.placeholder.com/150'" alt="제품 이미지" height="150">
+                    <v-img :src=" product.image || 'https://placekitten.com/150/150'" alt="제품 이미지" height="150">
                     </v-img>
                     <!-- 상품 이름, 회사, 카테고리, 가격 -->
                     <v-card-title>{{ product.productName }}</v-card-title>
