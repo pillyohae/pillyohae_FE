@@ -57,7 +57,7 @@ export default {
                 description: "",
                 companyName: "",
                 price: null,
-                stock: null,
+                //stock: null,
             },
             categories: [
                 "멀티비타민",
@@ -90,7 +90,7 @@ export default {
                 // 2. 이미지 개별 업로드
                 for (const image of this.images) {
                     const formData = new FormData();
-                    formData.append("file", image);
+                    formData.append("image", image);
 
                     await api.post(`/products/${productId}/images`, formData, {
                         headers: {
