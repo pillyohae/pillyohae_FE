@@ -13,13 +13,8 @@
 
         <!-- 결제 정보 폼 -->
         <v-main>
-            <BuyerPayReadyForm
-                :selectedProducts="selectedProducts"
-                :totalPrice="totalPrice"
-                :coupons="coupons"
-                :deliveryInfo="deliveryInfo"
-                @fetchCoupons="fetchCoupons"
-            />
+            <BuyerPayReadyForm :selectedProducts="selectedProducts" :totalPrice="totalPrice" :coupons="coupons"
+                :deliveryInfo="deliveryInfo" @fetchCoupons="fetchCoupons" />
         </v-main>
     </v-app>
 </template>
@@ -36,7 +31,12 @@ export default {
             selectedProducts: [],
             totalPrice: 0,
             coupons: [],
-            deliveryInfo: null, // 배송 정보를 저장
+            deliveryInfo: {
+                name: '',
+                email: '',
+                phoneNumber: '',
+                address: '',
+            },
         };
     },
     async mounted() {
@@ -51,18 +51,31 @@ export default {
         this.selectedProducts = JSON.parse(query.products);
         this.totalPrice = Number(query.totalPrice);
 
+
         try {
             const response = await api.get("/users/profile");
             const profile = response.data;
-            this.deliveryInfo = {
-                name: profile.name,
-                phoneNumber: profile.address.phoneNumber,
-                address: `${profile.address.postCode} ${profile.address.roadAddress} ${profile.address.detailAddress}`,
-            };
+
+            if (profile?.address) {
+                this.deliveryInfo = {
+                    name: profile.name || '정보 없음',
+                    email: profile.email || '정보 없음',
+                    phoneNumber: profile.address.phoneNumber || '정보 없음',
+                    address: `${profile.address.postCode || ''} ${profile.address.roadAddress || ''} ${profile.address.detailAddress || ''}`.trim(),
+                };
+            } else {
+                throw new Error('주소 정보가 누락되었습니다.');
+            }
         } catch (error) {
             console.error("배송지 정보 불러오기 실패:", error.response?.data || error.message);
             alert("배송지 정보를 가져올 수 없습니다.");
+            this.deliveryInfo = {
+                name: '정보 없음',
+                phoneNumber: '정보 없음',
+                address: '정보 없음',
+            };
         }
+
     },
     methods: {
         async fetchCoupons() {

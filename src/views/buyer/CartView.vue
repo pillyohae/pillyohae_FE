@@ -13,12 +13,8 @@
 
     <!-- 장바구니 폼 -->
     <v-main>
-      <CartForm
-        :products="cart.products"
-        :totalPrice="cart.totalPrice"
-        @proceedToOrder="navigateToPayReady"
-        @refresh="fetchCart"
-      />
+      <CartForm :products="cart.products" :totalPrice="cart.totalPrice" @proceedToOrder="navigateToPayReady"
+        @refresh="fetchCart" />
     </v-main>
   </v-app>
 </template>
@@ -26,6 +22,7 @@
 <script>
 import api from '../../api/axios';
 import CartForm from '../../components/buyer/CartForm.vue';
+import { logout } from '../../utils/auth';
 
 export default {
   components: { CartForm },
@@ -50,30 +47,18 @@ export default {
     },
     // 로그아웃 처리 함수
     async logout() {
-      try {
-        await api.post('/users/logout', {}, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-          }
-        });
-        this.$router.push('/login');
-        alert('로그아웃 되었습니다.');
-      } catch (error) {
-        console.error("로그아웃 중 에러:", error.response?.data || error.message);
-        alert('로그아웃 실패: 서버 오류');
-      }
+      await logout(this.$router);
     },
     // 선택된 상품 데이터를 결제 페이지로 전달
     navigateToPayReady({ selectedProducts, totalPrice }) {
-  this.$router.push({
-    name: "BuyerPayReadyView",
-    query: {
-      products: JSON.stringify(selectedProducts),
-      totalPrice: totalPrice,
+      this.$router.push({
+        name: "BuyerPayReadyView",
+        query: {
+          products: JSON.stringify(selectedProducts),
+          totalPrice: totalPrice,
+        },
+      });
     },
-  });
-},
 
   },
   mounted() {

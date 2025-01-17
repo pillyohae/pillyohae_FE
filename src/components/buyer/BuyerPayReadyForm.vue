@@ -44,7 +44,8 @@
     </v-card>
 
     <!-- 결제 버튼 -->
-    <v-btn color="green" block @click="confirmPayment">결제하기</v-btn>
+    <v-btn color="green" block @click="openPayment">결제하기</v-btn>
+
 
     <!-- 쿠폰 선택 다이얼로그 -->
     <v-dialog v-model="couponDialog" max-width="600px">
@@ -56,7 +57,7 @@
               <strong>{{ coupon.couponName }}</strong>
               <p>{{ coupon.couponDescription }}</p>
               <p>
-                할인: 
+                할인:
                 <span v-if="coupon.discountType === 'PERCENTAGE'">
                   {{ coupon.fixedRate }}% (최대 {{ formatPrice(coupon.maxDiscountAmount) }}원)
                 </span>
@@ -79,6 +80,7 @@
 
 <script>
 import api from '../../api/axios';
+
 export default {
   props: {
     selectedProducts: {
@@ -100,6 +102,7 @@ export default {
       coupons: [],
       selectedCoupon: null,
       discountAmount: 0,
+      widets: null,
     };
   },
   methods: {
@@ -136,10 +139,23 @@ export default {
       }
       return 0;
     },
-    confirmPayment() {
-      alert("결제가 완료되었습니다.");
-      // 결제 로직 추가
-    },
-  },
+
+    openPayment() {
+      const queryParams = new URLSearchParams({
+        orderId: `ORDER_${Date.now()}`,
+        orderName: `영양제_${this.selectedProducts.length}_건`,
+        totalAmount: this.totalPrice - this.discountAmount,
+        customerName: this.deliveryInfo.name,
+        customerEmail: this.deliveryInfo.email,
+        customerMobilePhone: this.deliveryInfo.phoneNumber,
+        clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
+        customerKey: 'vxkGzcNE9r_YudzBIOMfJas',
+        successUrl: 'http://localhost:5173/success',
+        failUrl: 'http://localhost:5173/fail',
+      });
+
+      window.open(`/payment?${queryParams.toString()}`, '_blank', 'width=600,height=700');
+    }
+  }
 };
 </script>

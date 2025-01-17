@@ -24,6 +24,7 @@
 import SellerProductForm from '../../components/seller/SellerProductForm.vue'
 import api from '../../api/axios'
 import { logout } from '../../utils/auth';
+
 export default {
     components: { SellerProductForm },
 
