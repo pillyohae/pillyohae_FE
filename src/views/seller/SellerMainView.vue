@@ -23,7 +23,7 @@
 
 import SellerProductForm from '../../components/seller/SellerProductForm.vue'
 import api from '../../api/axios'
-
+import { logout } from '../../utils/auth';
 export default {
     components: { SellerProductForm },
 
@@ -44,25 +44,8 @@ export default {
         },
 
         async logout() {
-            console.log("로그아웃 버튼 클릭됨"); // 버튼 클릭 여부 확인
-
-            try {
-                // 로그아웃 API 호출
-                await api.post('/users/logout', {}, {
-                    withCredentials: true, // 쿠키 전송 허용
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}` // 액세스 토큰 추가
-                    }
-                });
-
-                // 성공적으로 로그아웃하면 로그인 페이지로 이동
-                this.$router.push('/login');
-                alert('로그아웃 되었습니다.');
-            } catch (error) {
-                console.error("로그아웃 중 에러:", error.response?.data || error.message);
-                alert('로그아웃 실패: 서버 오류');
-            }
-        }
+            await logout(this.$router);
+        },
 
 
     },
