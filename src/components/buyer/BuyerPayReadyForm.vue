@@ -140,22 +140,47 @@ export default {
       return 0;
     },
 
-    openPayment() {
-      const queryParams = new URLSearchParams({
-        orderId: `ORDER_${Date.now()}`,
-        orderName: `영양제_${this.selectedProducts.length}_건`,
-        totalAmount: this.totalPrice - this.discountAmount,
-        customerName: this.deliveryInfo.name,
-        customerEmail: this.deliveryInfo.email,
-        customerMobilePhone: this.deliveryInfo.phoneNumber,
-        clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
-        customerKey: 'vxkGzcNE9r_YudzBIOMfJas',
-        successUrl: 'http://localhost:5173/success',
-        failUrl: 'http://localhost:5173/fail',
-      });
+    async openPayment() {
+      try {
+        // 1. 주문 생성 요청 데이터 구성
+        const productInfos = this.selectedProducts.map((product) => ({
+          productId: product.productId,
+          quantity: product.quantity,
+        }));
 
-      window.open(`/payment?${queryParams.toString()}`, '_blank', 'width=600,height=700');
+        const couponIds = this.selectedCoupon ? [this.selectedCoupon.couponId] : [];
+
+        const orderRequestData = {
+          productInfos,
+          couponIds,
+        };
+
+        // 2. 서버에 주문 생성 요청
+        const orderResponse = await api.post('/orders', orderRequestData);
+        const orderId = orderResponse.data.id; // 응답 구조가 flat한 경우
+
+        console.log('Order Response:', orderResponse.data);
+        console.log('order Id : ', orderId);
+
+        const queryParams = new URLSearchParams({
+          orderId, // 추출한 orderId 전달
+          orderName: `영양제_${this.selectedProducts.length}_건`,
+          totalAmount: this.totalPrice - this.discountAmount,
+          customerName: this.deliveryInfo.name,
+          customerEmail: this.deliveryInfo.email,
+          customerMobilePhone: this.deliveryInfo.phoneNumber,
+          clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
+          customerKey: 'vxkGzcNE9r_YudzBIOMfJas',
+          successUrl: 'http://localhost:5173/success',
+          failUrl: 'http://localhost:5173/fail',
+        });
+
+        window.open(`/payment?${queryParams.toString()}`, '_blank', 'width=600,height=700');
+      } catch (error) {
+        console.error('주문 요청 실패:', error.response?.data || error.message);
+        alert('주문에 실패했습니다.');
+      }
     }
-  }
-};
+  },
+}
 </script>

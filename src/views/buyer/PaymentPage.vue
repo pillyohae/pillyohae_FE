@@ -27,7 +27,7 @@
         const customerMobilePhone = params.get('customerMobilePhone').replace(/-/g, '');
         const successUrl = params.get('successUrl');
         const failUrl = params.get('failUrl');
-  
+
         // TossPayments 초기화
         const tossPayments = await loadTossPayments(clientKey);
   
