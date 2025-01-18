@@ -16,15 +16,16 @@
     </v-container>
 </template>
 
-<script>
-export default {
-    props: {
-        products: {
-            type: Array,
-            required: true,
-        },
-    },
-};
+<script setup>
+import { defineProps } from 'vue';
+
+defineProps({
+    products: {
+        type: Array,
+        required: true,
+    }
+})
 </script>
+
 
 <style></style>

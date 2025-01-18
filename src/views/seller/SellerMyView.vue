@@ -8,7 +8,7 @@
       <v-btn text to="/seller/product" color="green">내 상품 보기</v-btn>
       <v-btn text to="#">요청 주문 내역</v-btn>
       <v-btn text to="#">마이페이지</v-btn>
-      <v-btn text color="red" @click="logout">로그아웃</v-btn>
+      <v-btn text color="red" @click="performLogout">로그아웃</v-btn>
     </v-app-bar>
 
     <!-- 상품 리스트 -->
@@ -19,83 +19,90 @@
   </v-app>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from "vue";
 import api from "../../api/axios";
 import SellerMyForm from "../../components/seller/SellerMyForm.vue";
 import { logout } from "../../utils/auth";
+import router from "../../router";
 
-export default {
-  components: { SellerMyForm },
-  data() {
-    return {
-      products: [], // 전체 상품 데이터
-      filters: [
-        { name: "all", label: "전체", active: true },
-        { name: "selling", label: "판매 중", active: false },
-        { name: "outOfStock", label: "품절", active: false },
-        { name: "deleted", label: "삭제된 상품", active: false },
-      ],
-      currentFilter: "all", // 현재 선택된 필터
-    };
-  },
-  computed: {
-    filteredProducts() {
-      // 선택된 필터에 따라 상품 필터링
-      switch (this.currentFilter) {
-        case "selling":
-          return this.products.filter(
-            (product) => product.status === "판매중"
-          );
-        case "outOfStock":
-          return this.products.filter((product) => product.status === "품절");
-        case "deleted":
-          return this.products.filter(
-            (product) => product.status === "삭제됨"
-          );
-        default:
-          return this.products; // 전체 상품
-      }
-    },
-  },
-  methods: {
-    async fetchProducts() {
-      try {
-        const response = await api.get("/users/sellers/products");
-        this.products = response.data.content.map((product) => ({
-          ...product,
-          status: "판매중", // 기본 상태 설정
-          salesCount: 50, // 판매량 예시 값
-        }));
-      } catch (error) {
-        console.error("상품 목록 불러오기 실패:", error.response?.data || error.message);
-        alert("상품 목록을 불러올 수 없습니다.");
-      }
-    },
-    applyFilter(filterName) {
-      // 필터 변경
-      this.filters.forEach((filter) => {
-        filter.active = filter.name === filterName;
-      });
-      this.currentFilter = filterName;
-    },
-    viewProductDetail(productId) {
-      // 상품 상세보기로 이동
-      this.$router.push(`/seller/product/${productId}`);
-    },
-    deleteProduct(productId) {
-      // 상품 삭제 (삭제 로직 추가 필요)
-      alert(`${productId}번 상품을 삭제합니다.`);
-    },
-    goToAddProduct() {
-      // 상품 등록 페이지로 이동
-      this.$router.push("/seller/product/add");
-    },
-    async logout() {
-      await logout(this.$router);
-    },
-  },
-  mounted() {
-    this.fetchProducts(); // 컴포넌트가 마운트되면 상품 데이터를 가져옵니다.
-  },
+// 상품 데이터 및 필터 상태 관리
+const products = ref([]); // 전체 상품 데이터
+const filters = ref([
+  { name: "all", label: "전체", active: true },
+  { name: "selling", label: "판매 중", active: false },
+  { name: "outOfStock", label: "품절", active: false },
+  { name: "deleted", label: "삭제된 상품", active: false },
+]);
+const currentFilter = ref("all"); // 현재 선택된 필터
+
+// 선택된 필터에 따라 상품 필터링
+const filteredProducts = computed(() => {
+  switch (currentFilter.value) {
+    case "selling":
+      return products.value.filter((product) => product.status === "판매중");
+    case "outOfStock":
+      return products.value.filter((product) => product.status === "품절");
+    case "deleted":
+      return products.value.filter((product) => product.status === "삭제됨");
+    default:
+      return products.value; // 전체 상품
+  }
+});
+
+// 상품 목록 가져오기
+const fetchProducts = async () => {
+  try {
+    const response = await api.get("/users/sellers/products");
+    products.value = response.data.content.map((product) => ({
+      ...product,
+      status: "판매중", // 기본 상태 설정
+      salesCount: 50, // 판매량 예시 값
+    }));
+  } catch (error) {
+    console.error("상품 목록 불러오기 실패:", error.response?.data || error.message);
+    alert("상품 목록을 불러올 수 없습니다.");
+  }
 };
+
+// 필터 변경
+const applyFilter = (filterName) => {
+  filters.value.forEach((filter) => {
+    filter.active = filter.name === filterName;
+  });
+  currentFilter.value = filterName;
+};
+
+// 상품 상세보기로 이동
+const viewProductDetail = (productId) => {
+  router.push(`/seller/product/${productId}`);
+};
+
+// 상품 삭제
+const deleteProduct = (productId) => {
+  alert(`${productId}번 상품을 삭제합니다.`);
+};
+
+// 상품 등록 페이지로 이동
+const goToAddProduct = () => {
+  router.push("/seller/product/add");
+};
+
+// 로그아웃 처리
+const performLogout = async () => {
+  await logout();
+};
+
+// 컴포넌트가 마운트되면 상품 데이터 가져오기
+onMounted(() => {
+  fetchProducts();
+});
 </script>
+
+<style scoped>
+.fixed {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+}
+</style>

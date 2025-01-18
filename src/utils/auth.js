@@ -1,6 +1,6 @@
 import api from '../api/axios'; // Axios 인스턴스
-
-export async function logout(router) {
+import router from '../router';
+export async function logout() {
   try {
     await api.post('/users/logout', {}, {
       withCredentials: true,

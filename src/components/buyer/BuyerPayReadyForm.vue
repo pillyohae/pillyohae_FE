@@ -78,109 +78,118 @@
 </template>
 
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import api from '../../api/axios';
+import { defineProps } from 'vue';
 
-export default {
-  props: {
-    selectedProducts: {
-      type: Array,
-      required: true,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
-    deliveryInfo: {
-      type: Object,
-      required: true, // 반드시 부모 컴포넌트에서 전달받아야 함
-    },
+// Props 정의
+const props = defineProps({
+  selectedProducts: {
+    type: Array,
+    required: true,
   },
-  data() {
-    return {
-      couponDialog: false,
-      coupons: [],
-      selectedCoupon: null,
-      discountAmount: 0,
-      widets: null,
+  totalPrice: {
+    type: Number,
+    required: true,
+  },
+  deliveryInfo: {
+    type: Object,
+    required: true,
+  },
+});
+
+// 반응형 상태 선언
+const couponDialog = ref(false); // 쿠폰 선택 다이얼로그 표시 여부
+const coupons = ref([]); // 서버에서 가져온 쿠폰 목록
+const selectedCoupon = ref(null); // 선택된 쿠폰
+const discountAmount = ref(0); // 할인 금액
+
+// 가격 포맷팅 함수
+const formatPrice = (value) => value.toLocaleString();
+
+// 배송 정보 수정 알림 함수
+const editDelivery = () => {
+  alert('배송 정보를 수정하는 기능은 추후 구현될 예정입니다.');
+};
+
+// 쿠폰 다이얼로그 열기
+const openCouponDialog = async () => {
+  try {
+    const response = await api.get(`/users/coupons?totalPrice=${props.totalPrice}`);
+    coupons.value = response.data.couponList; // 서버에서 가져온 쿠폰 목록 저장
+    couponDialog.value = true; // 다이얼로그 표시
+  } catch (error) {
+    console.error('쿠폰 목록 가져오기 실패:', error.response?.data || error.message);
+    alert('쿠폰 목록을 가져올 수 없습니다.');
+  }
+};
+
+// 쿠폰 다이얼로그 닫기
+const closeCouponDialog = () => {
+  couponDialog.value = false;
+};
+
+// 쿠폰 적용
+const applyCoupon = (coupon) => {
+  selectedCoupon.value = coupon; // 선택된 쿠폰 저장
+  discountAmount.value = calculateDiscount(coupon); // 할인 금액 계산
+  couponDialog.value = false; // 다이얼로그 닫기
+};
+
+// 할인 금액 계산
+const calculateDiscount = (coupon) => {
+  if (coupon.discountType === 'FIXED_AMOUNT') {
+    return coupon.fixedAmount; // 고정 금액 할인
+  } else if (coupon.discountType === 'PERCENTAGE') {
+    const discount = (props.totalPrice * coupon.fixedRate) / 100; // 퍼센트 할인
+    return Math.min(discount, coupon.maxDiscountAmount); // 최대 할인 금액 제한
+  }
+  return 0; // 적용 가능한 할인 없음
+};
+
+// 결제 요청 처리
+const openPayment = async () => {
+  try {
+    // 주문 생성 요청 데이터 구성
+    const productInfos = props.selectedProducts.map((product) => ({
+      productId: product.productId,
+      quantity: product.quantity,
+    }));
+
+    const couponIds = selectedCoupon.value ? [selectedCoupon.value.couponId] : [];
+
+    const orderRequestData = {
+      productInfos,
+      couponIds,
     };
-  },
-  methods: {
-    formatPrice(value) {
-      return value.toLocaleString();
-    },
-    editDelivery() {
-      alert("배송 정보를 수정하는 기능은 추후 구현될 예정입니다.");
-    },
-    async openCouponDialog() {
-      try {
-        const response = await api.get(`/users/coupons?totalPrice=${this.totalPrice}`);
-        this.coupons = response.data.couponList;
-        this.couponDialog = true;
-      } catch (error) {
-        console.error('쿠폰 목록 가져오기 실패:', error.response?.data || error.message);
-        alert('쿠폰 목록을 가져올 수 없습니다.');
-      }
-    },
-    closeCouponDialog() {
-      this.couponDialog = false;
-    },
-    applyCoupon(coupon) {
-      this.selectedCoupon = coupon;
-      this.discountAmount = this.calculateDiscount(coupon);
-      this.couponDialog = false;
-    },
-    calculateDiscount(coupon) {
-      if (coupon.discountType === 'FIXED_AMOUNT') {
-        return coupon.fixedAmount;
-      } else if (coupon.discountType === 'PERCENTAGE') {
-        const discount = (this.totalPrice * coupon.fixedRate) / 100;
-        return Math.min(discount, coupon.maxDiscountAmount);
-      }
-      return 0;
-    },
 
-    async openPayment() {
-      try {
-        // 1. 주문 생성 요청 데이터 구성
-        const productInfos = this.selectedProducts.map((product) => ({
-          productId: product.productId,
-          quantity: product.quantity,
-        }));
+    // 서버에 주문 생성 요청
+    const orderResponse = await api.post('/orders', orderRequestData);
+    const orderId = orderResponse.data.orderInfo.orderId; // 생성된 주문 ID
 
-        const couponIds = this.selectedCoupon ? [this.selectedCoupon.couponId] : [];
+    console.log('Order Response:', orderResponse.data);
+    console.log('Order ID:', orderId);
 
-        const orderRequestData = {
-          productInfos,
-          couponIds,
-        };
+    // 결제 페이지로 전달할 쿼리 파라미터 구성
+    const queryParams = new URLSearchParams({
+      orderId, // 주문 ID
+      orderName: `영양제_${props.selectedProducts.length}_건`, // 주문 이름
+      totalAmount: props.totalPrice - discountAmount.value, // 최종 결제 금액
+      customerName: props.deliveryInfo.name, // 고객 이름
+      customerEmail: props.deliveryInfo.email, // 고객 이메일
+      customerMobilePhone: props.deliveryInfo.phoneNumber, // 고객 전화번호
+      clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
+      customerKey: 'vxkGzcNE9r_YudzBIOMfJas',
+      successUrl: 'http://localhost:5173/success', // 결제 성공 URL
+      failUrl: 'http://localhost:5173/fail', // 결제 실패 URL
+    });
 
-        // 2. 서버에 주문 생성 요청
-        const orderResponse = await api.post('/orders', orderRequestData);
-        const orderId = orderResponse.data.id; // 응답 구조가 flat한 경우
-
-        console.log('Order Response:', orderResponse.data);
-        console.log('order Id : ', orderId);
-
-        const queryParams = new URLSearchParams({
-          orderId, // 추출한 orderId 전달
-          orderName: `영양제_${this.selectedProducts.length}_건`,
-          totalAmount: this.totalPrice - this.discountAmount,
-          customerName: this.deliveryInfo.name,
-          customerEmail: this.deliveryInfo.email,
-          customerMobilePhone: this.deliveryInfo.phoneNumber,
-          clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
-          customerKey: 'vxkGzcNE9r_YudzBIOMfJas',
-          successUrl: 'http://localhost:5173/success',
-          failUrl: 'http://localhost:5173/fail',
-        });
-
-        window.open(`/payment?${queryParams.toString()}`, '_blank', 'width=600,height=700');
-      } catch (error) {
-        console.error('주문 요청 실패:', error.response?.data || error.message);
-        alert('주문에 실패했습니다.');
-      }
-    }
-  },
-}
+    // 결제 창 열기
+    window.open(`/payment?${queryParams.toString()}`, '_blank', 'width=600,height=700');
+  } catch (error) {
+    console.error('주문 요청 실패:', error.response?.data || error.message);
+    alert('주문에 실패했습니다.');
+  }
+};
 </script>

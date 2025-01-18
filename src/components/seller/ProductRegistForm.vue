@@ -30,13 +30,13 @@
             </v-row>
 
             <!-- 가격 -->
-             <v-row>
-            <v-text-field v-model="product.price" label="가격 *" type="number" required />
+            <v-row>
+                <v-text-field v-model="product.price" label="가격 *" type="number" required />
 
-            <!-- 재고 -->
-            <v-text-field v-model="product.stock" label="재고 *" type="number" required />
+                <!-- 재고 -->
+                <v-text-field v-model="product.stock" label="재고 *" type="number" required />
 
-        </v-row>
+            </v-row>
             <!-- 등록 버튼 -->
             <v-btn type="submit" color="green" block class="mt-4">
                 등록하기
@@ -45,69 +45,59 @@
     </v-container>
 </template>
 
-<script>
+
+<script setup>
 import api from "../../api/axios";
+import router from "../../router";
+import { reactive, ref } from "vue";
 
-export default {
-    data() {
-        return {
-            product: {
-                productName: "",
-                category: "",
-                description: "",
-                companyName: "",
-                price: null,
-                //stock: null,
-            },
-            categories: [
-                "멀티비타민",
-                "관절/뼈",
-                "눈 건강",
-                "간 건강",
-                "스트레스",
-                "수면",
-                "장 건강",
-            ],
-            images: [], // 업로드된 이미지 파일
-            imagePreviews: [], // 이미지 미리보기 URL
-        };
-    },
-    methods: {
-        handleImageSelection(event) {
-            const files = event.target.files;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                this.images.push(file);
-                this.imagePreviews.push(URL.createObjectURL(file));
-            }
-        },
-        async handleSubmit() {
-            try {
-                // 1. 상품 정보 등록
-                const productResponse = await api.post("/products", this.product);
-                const productId = productResponse.data.productId;
 
-                // 2. 이미지 개별 업로드
-                for (const image of this.images) {
-                    const formData = new FormData();
-                    formData.append("image", image);
+const product = reactive({
+    productName: "",
+    category: "",
+    description: "",
+    companyName: "",
+    price: null,
+}
+)
 
-                    await api.post(`/products/${productId}/images`, formData, {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    });
+const categories = ref([
+    "멀티비타민",
+    "관절/뼈",
+    "눈 건강",
+    "간 건강",
+    "스트레스",
+    "수면",
+    "장 건강",
+])
+
+const images = ref([]);
+const imagePreviews = ref([]);
+
+const handleSubmit = async () => {
+    try {
+        const productResponse = await api.post('/products', product);
+        const productId = productResponse.data.productId;
+
+        for (const image of images) {
+            const formData = new FormData();
+            formData.append("image", image);
+
+            await api.post(`/products/${productId}/images`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
                 }
+            });
+        }
 
-                alert("상품이 등록되었습니다.");
-                this.$router.push("/seller/product"); // 상품 목록 페이지로 이동
-            } catch (error) {
-                console.error("상품 등록 실패:", error.response?.data || error.message);
-                alert("상품 등록에 실패했습니다.");
-            }
-        },
-    },
-};
+        alert('상품이 등록되었습니다!');
+        router.push('/products');
+    } catch (error) {
+        console.error("상품 등록 실패:", error.response?.data || error.message);
+        alert("상품 등록에 실패했습니다.");
+    }
+}
 </script>
+
 
 <style></style>

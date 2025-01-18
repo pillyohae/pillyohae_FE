@@ -9,7 +9,7 @@
             <v-btn text to="/seller/product">내 상품 보기</v-btn>
             <v-btn text to="#">요청 주문</v-btn>
             <!-- 로그아웃 버튼 -->
-            <v-btn text color="red" @click="logout">로그아웃</v-btn>
+            <v-btn text color="red" @click="performLogout ">로그아웃</v-btn>
         </v-app-bar>
 
 
@@ -19,42 +19,35 @@
     </v-app>
 </template>
 
-<script>
-
+<script setup>
 import SellerProductForm from '../../components/seller/SellerProductForm.vue'
 import api from '../../api/axios'
 import { logout } from '../../utils/auth';
+import { onMounted, ref } from 'vue';
 
-export default {
-    components: { SellerProductForm },
+const products = ref([]);
 
-    data() {
-        return {
-            products: [],
-        };
-    },
-    methods: {
-        async fetchProducts() {
-            try {
-                const response = await api.get('/products/search');
-                this.products = response.data.content;
-            } catch (error) {
-                console.error('상품 목록 불러오기 실패 : ', error.response?.data || error.message);
-                alert('상품 목록을 불러오지 못했습니다.');
-            }
-        },
-
-        async logout() {
-            await logout(this.$router);
-        },
-
-
-    },
-    mounted() {
-        this.fetchProducts();
-    },
+const fetchProducts = async () => {
+    try {
+        const response = await api.get('/products/search');
+        console.log(response.data.content);
+        products.value = response.data.content;
+    } catch (error) {
+        console.error('상품 목록 불러오기 실패 : ', error.response?.data || error.message);
+        alert('상품 목록을 불러오지 못했습니다.');
+    }
 
 }
+
+// 로그아웃 처리
+const performLogout  = async () => {
+        await logout();
+};
+
+onMounted(() => {
+    fetchProducts();
+})
 </script>
+
 
 <style></style>
