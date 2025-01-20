@@ -49,7 +49,7 @@
 
     <!-- 주문 목록 -->
     <v-row>
-      <v-col v-for="order in orders" :key="order.orderId" cols="12" md="6">
+      <v-col v-for="order in orders" :key="order.orderId" cols="12" md="6" @click="router.push(`/myorderdetails/${order.orderId}`)" style="cursor: pointer">
         <v-card>
           <v-img :src="order.imageUrl" height="200px" />
           <v-card-title>{{ order.orderName }}</v-card-title>
@@ -71,6 +71,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import router from "../../router";
 
 const props = defineProps({
   orders: {

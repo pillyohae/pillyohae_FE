@@ -2,7 +2,7 @@
   <v-container>
     <!-- 상단 내비게이션 -->
     <v-row>
-      <v-btn icon @click="$router.go(-1)">
+      <v-btn icon @click="$router.push('/mypage')">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-card-title>주문/배송 내역</v-card-title>
@@ -31,8 +31,8 @@ const orders = ref([]);
 const pagination = ref({
   page: 1,
   totalPages: 1,
-  startAt: null,
-  endAt: null,
+  startAt: new Date(),
+  endAt: new Date(),
 });
 
 // 주문 내역 가져오기
