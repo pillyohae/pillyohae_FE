@@ -13,6 +13,7 @@ import BuyerPayReadyView from "../views/buyer/BuyerPayReadyView.vue";
 import PaymentPage from "../views/buyer/PaymentPage.vue";
 import SuccessPage from "../views/buyer/SuccessPage.vue"
 import FailPage from "../views/buyer/FailPage.vue"
+import MyPageView from "../views/buyer/MyPageView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것
@@ -29,6 +30,7 @@ const routes = [
     { path: '/payment', name: 'PaymentPage', component:PaymentPage},
     { path: '/success', name: 'SuccessPage', component:SuccessPage },
     { path: '/fail', name: 'FailPage', component: FailPage },
+    { path: '/mypage', name :'MyPage', component: MyPageView },
 ]
 
 //Vue router 인스턴스 생성
