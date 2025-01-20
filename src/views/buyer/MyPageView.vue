@@ -45,8 +45,8 @@ onMounted(async () => {
     }
 })
 
-const performLogout = () => {
-    logout();
+const performLogout = async () => {
+    await logout();
 }
 
 </script>

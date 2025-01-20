@@ -148,7 +148,7 @@ const toggleSelectAll = () => {
     selectedProducts.value = [];
   } else {
     // 전체 선택
-    selectedProducts.value = [...products];
+    selectedProducts.value = [...props.products];
   }
 };
 

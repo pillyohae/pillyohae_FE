@@ -12,11 +12,11 @@
         <v-row>
             <v-col cols="4">
                 <v-card outlined class="text-center">
-                    <v-card-title>주문/배송</v-card-title>
+                    <v-card-title>주문내역</v-card-title>
                     <v-card-text>
                         <v-icon color="primary" large>mdi-package</v-icon>
                     </v-card-text>
-                    <v-btn color="primary" to="/myOrder">주문/배송 보기</v-btn>
+                    <v-btn color="primary" to="/myOrder">주문 내역</v-btn>
                 </v-card>
             </v-col>
             <v-col cols="4">

@@ -31,7 +31,7 @@ const fetchProducts = async () => {
     try {
         const response = await api.get('/products/search');
         console.log(response.data.content);
-        products.value = response.data.content;
+        products.value = response.data.content.filter((product) => product.status === 'SELLING');
     } catch (error) {
         console.error('상품 목록 불러오기 실패 : ', error.response?.data || error.message);
         alert('상품 목록을 불러오지 못했습니다.');

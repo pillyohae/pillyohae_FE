@@ -36,7 +36,7 @@ const products = ref([]); // 서버에서 받아온 상품 목록
 const fetchProducts = async () => {
   try {
     const response = await api.get('/products/search'); // 서버로 GET 요청
-    products.value = response.data.content; // 상품 목록을 상태에 저장
+    products.value = response.data.content.filter((product) => product.status === 'SELLING');
   } catch (error) {
     console.error('제품 목록을 가져오는 중 오류 발생:', error.response?.data || error.message);
     alert('제품 목록을 불러오지 못했습니다.');

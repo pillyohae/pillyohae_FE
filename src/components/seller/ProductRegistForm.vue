@@ -25,7 +25,8 @@
             <input type="file" multiple accept="image/*" @change="handleImageSelection" />
             <v-row class="mb-12">
                 <v-col v-for="(image, index) in imagePreviews" :key="index" cols="2" class="mt-2">
-                    <v-img :src="image" alt="이미지 미리보기" height="80"></v-img>
+                    <v-img :src="image" alt="이미지 미리보기" height="80" />
+                    <v-btn small color="red" @click="removeImage(index)">삭제</v-btn>
                 </v-col>
             </v-row>
 
@@ -35,8 +36,8 @@
 
                 <!-- 재고 -->
                 <v-text-field v-model="product.stock" label="재고 *" type="number" required />
-
             </v-row>
+
             <!-- 등록 버튼 -->
             <v-btn type="submit" color="green" block class="mt-4">
                 등록하기
@@ -45,12 +46,10 @@
     </v-container>
 </template>
 
-
 <script setup>
 import api from "../../api/axios";
 import router from "../../router";
 import { reactive, ref } from "vue";
-
 
 const product = reactive({
     productName: "",
@@ -58,8 +57,8 @@ const product = reactive({
     description: "",
     companyName: "",
     price: null,
-}
-)
+    stock: null,
+});
 
 const categories = ref([
     "멀티비타민",
@@ -69,35 +68,57 @@ const categories = ref([
     "스트레스",
     "수면",
     "장 건강",
-])
+]);
 
 const images = ref([]);
 const imagePreviews = ref([]);
 
+const handleImageSelection = (event) => {
+    const files = Array.from(event.target.files);
+
+    files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreviews.value.push(e.target.result);
+            images.value.push(file);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    event.target.value = ""; // 같은 파일 선택 가능하도록 초기화
+};
+
+const removeImage = (index) => {
+    imagePreviews.value.splice(index, 1);
+    images.value.splice(index, 1);
+};
+
 const handleSubmit = async () => {
     try {
+        if (!images.value.length) {
+            alert("이미지를 선택해주세요.");
+            return;
+        }
+
         const productResponse = await api.post('/products', product);
         const productId = productResponse.data.productId;
 
-        for (const image of images) {
+        for (const image of images.value) {
             const formData = new FormData();
             formData.append("image", image);
 
             await api.post(`/products/${productId}/images`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                }
+                },
             });
         }
 
         alert('상품이 등록되었습니다!');
-        router.push('/products');
+        router.push('/seller');
     } catch (error) {
         console.error("상품 등록 실패:", error.response?.data || error.message);
         alert("상품 등록에 실패했습니다.");
     }
-}
+};
 </script>
-
-
-<style></style>

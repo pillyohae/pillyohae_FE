@@ -31,7 +31,7 @@ const products = ref([]); // 전체 상품 데이터
 const filters = ref([
   { name: "all", label: "전체", active: true },
   { name: "selling", label: "판매 중", active: false },
-  { name: "outOfStock", label: "품절", active: false },
+  { name: "sold_out", label: "품절", active: false },
   { name: "deleted", label: "삭제된 상품", active: false },
 ]);
 const currentFilter = ref("all"); // 현재 선택된 필터
@@ -40,11 +40,11 @@ const currentFilter = ref("all"); // 현재 선택된 필터
 const filteredProducts = computed(() => {
   switch (currentFilter.value) {
     case "selling":
-      return products.value.filter((product) => product.status === "판매중");
-    case "outOfStock":
-      return products.value.filter((product) => product.status === "품절");
+      return products.value.filter((product) => product.status === "SELLING");
+    case "sold_out":
+      return products.value.filter((product) => product.status === "SOLD_OUT");
     case "deleted":
-      return products.value.filter((product) => product.status === "삭제됨");
+      return products.value.filter((product) => product.status === "DELETED");
     default:
       return products.value; // 전체 상품
   }
@@ -54,11 +54,8 @@ const filteredProducts = computed(() => {
 const fetchProducts = async () => {
   try {
     const response = await api.get("/users/sellers/products");
-    products.value = response.data.content.map((product) => ({
-      ...product,
-      status: "판매중", // 기본 상태 설정
-      salesCount: 50, // 판매량 예시 값
-    }));
+    
+    products.value = response.data.content;
   } catch (error) {
     console.error("상품 목록 불러오기 실패:", error.response?.data || error.message);
     alert("상품 목록을 불러올 수 없습니다.");
@@ -79,8 +76,13 @@ const viewProductDetail = (productId) => {
 };
 
 // 상품 삭제
-const deleteProduct = (productId) => {
+const deleteProduct = async (productId) => {
   alert(`${productId}번 상품을 삭제합니다.`);
+  try {
+    const response = await api.delete(`/products/${productId}`);
+  } catch (error) {
+    console.log('삭제 실패 : ', error.response?.data || error.message);
+  }
 };
 
 // 상품 등록 페이지로 이동

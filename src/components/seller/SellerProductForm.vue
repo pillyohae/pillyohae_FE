@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-row>
-            <v-col v-for="product in products" :key="product.productId" cols="12" md="4">
+            <v-col v-for="product in props.products" :key="product.productId" cols="12" md="4">
                 <v-card>
                     <v-img :src="product.imageUrl || 'https://via.placeholder.com/150'" alt="제품 이미지"
                         height="150"></v-img>
@@ -19,7 +19,7 @@
 <script setup>
 import { defineProps } from 'vue';
 
-defineProps({
+const props = defineProps({
     products: {
         type: Array,
         required: true,

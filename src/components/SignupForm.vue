@@ -43,6 +43,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { defineEmits } from 'vue';
+
+const emit = defineEmits(['handleSignup']);
 
 // 사용자 입력 데이터를 관리하는 ref 선언
 const name = ref('');
@@ -82,7 +85,7 @@ const handleSignUp = () => {
         password: password.value,
         role: role.value,
     };
-    emit('signup', userInfo); // signup 이벤트 발생
+    emit('handleSignup', userInfo); // signup 이벤트 발생
 };
 
 // 카카오 주소 검색 API 호출

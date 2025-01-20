@@ -4,7 +4,7 @@
         <h2>회원가입</h2>
         <!-- SignupForm 컴포넌트 -->
         <!-- 사용자 정보 입력 후 @signup 이벤트를 발생 시 SignupView 로 이벤트가 전달, SignupUser 호출 -->
-        <SignupForm @signup="SignupUser" />
+        <SignupForm @handleSignup="SignupUser" />
     </div>
 </template>
 

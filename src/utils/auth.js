@@ -13,6 +13,7 @@ export async function logout() {
     router.push('/login'); // 로그인 화면으로 이동
   } catch (error) {
     console.error("로그아웃 중 에러:", error.response?.data || error.message);
+    router.push('/login');
     alert('로그아웃 실패: 서버 오류');
   }
 }
