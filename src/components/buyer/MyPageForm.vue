@@ -5,7 +5,7 @@
             <v-card-text>
                 <p>이름: {{ userInfo.name }}</p>
                 <p>이메일: {{ userInfo.email }}</p>
-                <v-btn color="green" to = '/profile'>프로필 보기</v-btn>
+                <v-btn color="green" to = '/myprofile'>프로필 보기</v-btn>
             </v-card-text>
         </v-card>
 
