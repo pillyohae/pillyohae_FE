@@ -23,13 +23,18 @@
             <!-- 이미지 업로드 -->
             <h3>이미지 업로드 *</h3>
             <input type="file" multiple accept="image/*" @change="handleImageSelection" />
-            <v-row class="mb-12">
-                <v-col v-for="(image, index) in imagePreviews" :key="index" cols="2" class="mt-2">
-                    <v-img :src="image" alt="이미지 미리보기" height="80" />
-                    <v-btn small color="red" @click="removeImage(index)">삭제</v-btn>
-                </v-col>
-            </v-row>
 
+            <!-- 이미지 리스트 -->
+            <draggable v-model="imagePreviews" :options="{ animation: 200 }" @end="onImageOrderChanged"
+                class="drag-container">
+                <template #item="{ element, index }">
+                    <div class="image-item">
+                        <v-img :src="element" alt="이미지 미리보기" height="80" />
+                        <v-btn small color="red" @click="removeImage(index)">삭제</v-btn>
+                    </div>
+                </template>
+            </draggable>
+            <br>
             <!-- 가격 -->
             <v-row>
                 <v-text-field v-model="product.price" label="가격 *" type="number" required />
@@ -50,6 +55,7 @@
 import api from "../../api/axios";
 import router from "../../router";
 import { reactive, ref } from "vue";
+import draggable from "vuedraggable";
 
 const product = reactive({
     productName: "",
@@ -88,6 +94,13 @@ const handleImageSelection = (event) => {
     event.target.value = ""; // 같은 파일 선택 가능하도록 초기화
 };
 
+const onImageOrderChanged = (event) => {
+    // 변경된 순서에 맞게 원본 images 배열도 재정렬
+    const movedImage = images.value.splice(event.oldIndex, 1)[0];
+    images.value.splice(event.newIndex, 0, movedImage);
+};
+
+
 const removeImage = (index) => {
     imagePreviews.value.splice(index, 1);
     images.value.splice(index, 1);
@@ -122,3 +135,12 @@ const handleSubmit = async () => {
     }
 };
 </script>
+
+<style scoped>
+.drag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    /* 이미지 간 간격 */
+}
+</style>

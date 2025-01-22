@@ -5,7 +5,7 @@
             <v-spacer></v-spacer>
             <!-- 네비게이션 메뉴 -->
             <v-btn text to="/buyer">홈</v-btn>
-            <v-btn text to="#">설문</v-btn>
+            <v-btn text to="/survey">설문</v-btn>
             <v-btn text to="/cart">장바구니</v-btn>
             <v-btn text to="/mypage">마이페이지</v-btn>
             <!-- 로그아웃 버튼 -->

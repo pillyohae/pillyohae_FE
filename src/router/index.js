@@ -17,6 +17,8 @@ import MyPageView from "../views/buyer/MyPageView.vue";
 import MyOrderView from "../views/buyer/MyOrderView.vue";
 import MyOrderDetailView from "../views/buyer/MyOrderDetailView.vue";
 import MyProfilePage from "../views/buyer/MyProfilePage.vue";
+import SurveyView from "../views/buyer/SurveyView.vue";
+import SurveyCreateView from "../views/buyer/SurveyCreateView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것
@@ -37,6 +39,8 @@ const routes = [
     { path: '/myorder', name:'MyOrderPage', component:MyOrderView},
     { path: '/myorderdetails/:orderId', name: 'MyOrderDetailsPage', component:MyOrderDetailView},
     { path: '/myprofile', name: 'MyProfilePage', component:MyProfilePage},
+    { path: '/survey', name:'SurveyPage', component:SurveyView},
+    { path: '/survey/create', name:'SurveyCreatePage', component : SurveyCreateView}
 ]
 
 //Vue router 인스턴스 생성

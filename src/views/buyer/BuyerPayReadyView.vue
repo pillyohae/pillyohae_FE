@@ -5,9 +5,9 @@
             <v-toolbar-title>Pill요해?</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn text to="/buyer">홈</v-btn>
-            <v-btn text to="#">설문</v-btn>
+            <v-btn text to="/survey">설문</v-btn>
             <v-btn text to="/cart">장바구니</v-btn>
-            <v-btn text to="#">마이페이지</v-btn>
+            <v-btn text to="/mypage">마이페이지</v-btn>
             <v-btn text color="red" @click="performLogout">로그아웃</v-btn>
         </v-app-bar>
 
