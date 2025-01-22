@@ -14,7 +14,7 @@
   
   <script setup>
   import { ref, onMounted } from 'vue';
-  import router from "../../router";
+  import router from "../../../router";
   
   // 에러 코드와 메시지
   const code = ref('');

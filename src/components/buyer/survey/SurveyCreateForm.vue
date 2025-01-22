@@ -47,7 +47,7 @@
   <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
-  import api from '../../api/axios';
+  import api from '../../../api/axios';
   
   const router = useRouter();
   

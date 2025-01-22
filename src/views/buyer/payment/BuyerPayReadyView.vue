@@ -21,10 +21,10 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
-import router from "../../router";
-import BuyerPayReadyForm from '../../components/buyer/BuyerPayReadyForm.vue';
-import api from '../../api/axios';
-import { logout } from '../../utils/auth';
+import router from "../../../router";
+import BuyerPayReadyForm from '../../../components/buyer/payment/BuyerPayReadyForm.vue';
+import api from '../../../api/axios';
+import { logout } from '../../../utils/auth';
 
 
 // 반응형 상태 정의

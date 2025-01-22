@@ -20,10 +20,10 @@
   </template>
   
   <script setup>
-  import SurveyForm from '../../components/buyer/SurveyForm.vue';
+  import SurveyForm from '../../../components/buyer/survey/SurveyForm.vue';
   import { ref, onMounted } from 'vue';
-  import api from '../../api/axios';
-  import { logout } from '../../utils/auth';
+  import api from '../../../api/axios';
+  import { logout } from '../../../utils/auth';
   
   const surveys = ref([]);
   

@@ -20,10 +20,18 @@
                 {{ category }}
             </v-btn>
 
-            <!-- 이미지 업로드 -->
-            <h3>이미지 업로드 *</h3>
-            <input type="file" multiple accept="image/*" @change="handleImageSelection" />
+            <h3>메인 이미지 업로드 * (이 이미지는 페르소나 이미지 생성에 사용될 이미지입니다!)</h3>
+            <input type="file" accept="image/*" @change="handleMainImageSelection"/>
+            <v-row class="mb-12">
+                <v-col cols="auto" v-if="mainImagePreview">
+                    <v-img :src="mainImagePreview" alt="메인 이미지 미리보기" height="100" />
+                    <v-btn small color="red" @click="removeMainImage(index)">삭제</v-btn>
+                </v-col>
+            </v-row>
 
+            <!-- 이미지 업로드 -->
+            <h3>상세 이미지 업로드 *</h3>
+            <input type="file" multiple accept="image/*" @change="handleImageSelection" />
             <!-- 이미지 리스트 -->
             <draggable v-model="imagePreviews" :options="{ animation: 200 }" @end="onImageOrderChanged"
                 class="drag-container">
@@ -76,8 +84,28 @@ const categories = ref([
     "장 건강",
 ]);
 
+const mainImage = ref(null);
+const mainImagePreview = ref(null);
 const images = ref([]);
 const imagePreviews = ref([]);
+
+const handleMainImageSelection = (event) => {
+    const file = event.target.files[0];
+    if(file) {
+        mainImage.value = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            mainImagePreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    event.target.value = "";
+};
+
+const removeMainImage = () => {
+  mainImage.value = null;
+  mainImagePreview.value = null;
+};
 
 const handleImageSelection = (event) => {
     const files = Array.from(event.target.files);
@@ -108,13 +136,26 @@ const removeImage = (index) => {
 
 const handleSubmit = async () => {
     try {
+        
+        if (!mainImage.value) {
+            alert("메인 이미지를 선택해주세요.");
+            return;
+        }
+
         if (!images.value.length) {
-            alert("이미지를 선택해주세요.");
+            alert("상세 이미지를 선택해주세요.");
             return;
         }
 
         const productResponse = await api.post('/products', product);
         const productId = productResponse.data.productId;
+
+        const mainImageData = new FormData();
+        mainImageData.append("image", mainImage.value);
+
+        await api.post(`/products/${productId}/main-image`, mainImageData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
 
         for (const image of images.value) {
             const formData = new FormData();
@@ -126,6 +167,7 @@ const handleSubmit = async () => {
                 },
             });
         }
+
 
         alert('상품이 등록되었습니다!');
         router.push('/seller');

@@ -80,7 +80,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import api from '../../api/axios';
+import api from '../../../api/axios';
 import { defineProps } from 'vue';
 
 // Props 정의

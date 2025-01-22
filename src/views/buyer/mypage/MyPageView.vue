@@ -20,9 +20,9 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
-import MyPageForm from '../../components/buyer/MyPageForm.vue';
-import api from '../../api/axios';
-import { logout } from '../../utils/auth';
+import MyPageForm from '../../../components/buyer/mypage/MyPageForm.vue';
+import api from '../../../api/axios';
+import { logout } from '../../../utils/auth';
 
 const userInfo = reactive({
     name: '',

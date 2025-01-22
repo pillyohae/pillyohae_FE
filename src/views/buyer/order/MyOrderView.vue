@@ -24,8 +24,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import MyOrderForm from '../../components/buyer/MyOrderForm.vue';
-import api from '../../api/axios';
+import MyOrderForm from '../../../components/buyer/order/MyOrderForm.vue';
+import api from '../../../api/axios';
 
 const orders = ref([]);
 const pagination = ref({

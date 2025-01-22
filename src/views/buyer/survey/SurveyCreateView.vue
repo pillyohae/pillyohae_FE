@@ -15,8 +15,8 @@
   </template>
   
   <script setup>
-  import SurveyCreateForm from '../../components/buyer/SurveyCreateForm.vue';
-  import api from '../../api/axios';
+  import SurveyCreateForm from '../../../components/buyer/survey/SurveyCreateForm.vue';
+  import api from '../../../api/axios';
   
   const submitSurvey = async (categories) => {
     try {

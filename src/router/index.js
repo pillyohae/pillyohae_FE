@@ -9,16 +9,16 @@ import CartView from "../views/buyer/CartView.vue";
 import SellerMainView from "../views/seller/SellerMainView.vue";
 import SellerMyView from "../views/seller/SellerMyView.vue";
 import ProductRegistView from "../views/seller/ProductRegistView.vue";
-import BuyerPayReadyView from "../views/buyer/BuyerPayReadyView.vue";
-import PaymentPage from "../views/buyer/PaymentPage.vue";
-import SuccessPage from "../views/buyer/SuccessPage.vue"
-import FailPage from "../views/buyer/FailPage.vue"
-import MyPageView from "../views/buyer/MyPageView.vue";
-import MyOrderView from "../views/buyer/MyOrderView.vue";
-import MyOrderDetailView from "../views/buyer/MyOrderDetailView.vue";
-import MyProfilePage from "../views/buyer/MyProfilePage.vue";
-import SurveyView from "../views/buyer/SurveyView.vue";
-import SurveyCreateView from "../views/buyer/SurveyCreateView.vue";
+import BuyerPayReadyView from "../views/buyer/payment/BuyerPayReadyView.vue";
+import PaymentPage from "../views/buyer/payment/PaymentPage.vue";
+import SuccessPage from "../views/buyer/payment/SuccessPage.vue"
+import FailPage from "../views/buyer/payment/FailPage.vue"
+import MyPageView from "../views/buyer/mypage/MyPageView.vue";
+import MyOrderView from "../views/buyer/order/MyOrderView.vue";
+import MyOrderDetailView from "../views/buyer/order/MyOrderDetailView.vue";
+import MyProfilePage from "../views/buyer/mypage/MyProfilePage.vue";
+import SurveyView from "../views/buyer/survey/SurveyView.vue";
+import SurveyCreateView from "../views/buyer/survey/SurveyCreateView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것

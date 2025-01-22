@@ -50,8 +50,8 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
-import MyProfileForm from '../../components/buyer/MyProfileForm.vue';
-import api from '../../api/axios';
+import MyProfileForm from '../../../components/buyer/mypage/MyProfileForm.vue';
+import api from '../../../api/axios';
 
 const userInfo = reactive({
   name: '',

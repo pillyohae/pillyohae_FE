@@ -21,8 +21,8 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router'; // useRoute 임포트
-  import MyOrderDetailForm from '../../components/buyer/MyOrderDetailForm.vue';
-  import api from '../../api/axios';
+  import MyOrderDetailForm from '../../../components/buyer/order/MyOrderDetailForm.vue';
+  import api from '../../../api/axios';
   
   const route = useRoute(); // useRoute 사용
   const orderId = route.params.orderId; // 경로 파라미터에서 orderId 가져오기

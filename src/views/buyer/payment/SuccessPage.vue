@@ -10,8 +10,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import router from "../../router";
-import api from '../../api/axios';
+import router from "../../../router";
+import api from '../../../api/axios';
 
 
 // 결제 데이터 변수
