@@ -11,9 +11,9 @@
   
   <script setup>
   import { ref, onMounted } from 'vue';
-  import api from '../../api/axios';
-  import AvailableCouponForm from '../../components/buyer/coupon/AvailableCouponForm.vue';
-  import BuyerNavigationBar from '../buyer/BuyerNavigationBar.vue';
+  import api from '../../../api/axios';
+  import AvailableCouponForm from '../../../components/buyer/coupon/AvailableCouponForm.vue';
+  import BuyerNavigationBar from '../../buyer/BuyerNavigationBar.vue';
   
   const availableCoupons = ref([]);
   
