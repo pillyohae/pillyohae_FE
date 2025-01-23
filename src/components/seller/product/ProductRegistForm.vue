@@ -33,7 +33,7 @@
             <h3>상세 이미지 업로드 *</h3>
             <input type="file" multiple accept="image/*" @change="handleImageSelection" />
             <!-- 이미지 리스트 -->
-            <draggable v-model="imagePreviews" :options="{ animation: 200 }" @end="onImageOrderChanged"
+            <draggable v-model="imagePreviews" :options="{ animation: 200 }" itemKey="index" @end="onImageOrderChanged"
                 class="drag-container">
                 <template #item="{ element, index }">
                     <div class="image-item">
@@ -153,7 +153,7 @@ const handleSubmit = async () => {
         const mainImageData = new FormData();
         mainImageData.append("image", mainImage.value);
 
-        await api.post(`/products/${productId}/main-image`, mainImageData, {
+        await api.post(`/products/${productId}/images`, mainImageData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
 

@@ -32,29 +32,38 @@
   import { ref, onMounted } from 'vue';
   import ProductDetailForm from '../../../components/seller/product/ProductDetailForm.vue';
   import api from '../../../api/axios';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import { logout } from '../../../utils/auth';
   
   const product = ref(null);
   
-  const router = useRoute();
+  const router = useRouter();
+  const route = useRoute();
   
   const performLogout = async () => {
-    await logout(router);
+    await logout(route);
   };
   
   const fetchProductDetails = async () => {
-    const productId = router.params.productId;
+    const productId = route.params.productId;
     try {
       const response = await api.get(`/products/${productId}`);
       product.value = response.data;
     } catch (error) {
       console.error('상품 상세 조회 실패:', error);
       alert('상품 정보를 불러오지 못했습니다.');
-      router.push('/seller/product');
+      route.push('/seller/product');
     }
   };
   
+  const goToEdit = () => {
+    router.push({
+      name: 'ProductEditPage',
+      params : {productId: product.value.productId},
+      query: { productData: JSON.stringify(product.value) }, // 쿼리로 데이터 전달
+    });
+  }
+
   onMounted(fetchProductDetails);
   </script>
   
@@ -67,7 +76,7 @@
     left: 0;
     right: 0;
     padding: 15px;
-    background-color: black;
+    background-color: white;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   }
   
