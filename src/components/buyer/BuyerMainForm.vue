@@ -3,7 +3,7 @@
         <v-row>
             <!-- 서버에서 가져온 상품 목록을 반복해서 보여줌 -->
             <v-col v-for="product in products" :key="product.productId" cols="12" md="4">
-                <v-card>
+                <v-card @click="goToProductDetail(product.productId)">
                     <!-- 상품 이미지 -->
                     <v-img :src="product.image || 'https://placekitten.com/150/150'" alt="제품 이미지" height="150">
                     </v-img>
@@ -51,7 +51,7 @@
 <script setup>
 import { ref } from 'vue'; // 반응형 데이터 관리
 import api from '../../api/axios'; // 서버와 통신을 위한 Axios 가져오기
-
+import { useRouter } from 'vue-router';
 // Props 정의
 defineProps({
     products: {
@@ -64,6 +64,13 @@ defineProps({
 const dialog = ref(false); // 다이얼로그 표시 여부
 const selectedProduct = ref(null); // 선택된 상품 정보
 const quantity = ref(1); // 선택된 상품 수량
+
+const router = useRouter();
+
+// 상품 상세 페이지로 이동하는 함수
+const goToProductDetail = (productId) => {
+    router.push({ name: 'BuyerProductView', params: { productId } });
+};
 
 // 장바구니 다이얼로그를 여는 함수
 const openDialog = (product) => {
