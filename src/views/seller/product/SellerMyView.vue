@@ -21,10 +21,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import api from "../../api/axios";
-import SellerMyForm from "../../components/seller/SellerMyForm.vue";
-import { logout } from "../../utils/auth";
-import router from "../../router";
+import api from "../../../api/axios";
+import SellerMyForm from "../../../components/seller/product/SellerMyForm.vue";
+import { logout } from "../../../utils/auth";
+import router from "../../../router";
 
 // 상품 데이터 및 필터 상태 관리
 const products = ref([]); // 전체 상품 데이터

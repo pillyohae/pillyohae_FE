@@ -25,7 +25,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'; // 반응형 상태와 라이프사이클 훅
-import ProductForm from '../../components/buyer/BuyerProductForm.vue'; // 상품 표시 컴포넌트
+import ProductForm from '../../components/buyer/BuyerMainForm.vue'; // 상품 표시 컴포넌트
 import api from '../../api/axios'; // 서버와 통신을 위한 Axios
 import { logout } from '../../utils/auth'; // 로그아웃 유틸 함수
 

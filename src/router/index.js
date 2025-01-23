@@ -7,8 +7,8 @@ import SignupView from "../views/SignupView.vue"; //회원가입 페이지
 import BuyerMainView from "../views/buyer/BuyerMainView.vue";
 import CartView from "../views/buyer/CartView.vue";
 import SellerMainView from "../views/seller/SellerMainView.vue";
-import SellerMyView from "../views/seller/SellerMyView.vue";
-import ProductRegistView from "../views/seller/ProductRegistView.vue";
+import SellerMyView from "../views/seller/product/SellerMyView.vue";
+import ProductRegistView from "../views/seller/product/ProductRegistView.vue";
 import BuyerPayReadyView from "../views/buyer/payment/BuyerPayReadyView.vue";
 import PaymentPage from "../views/buyer/payment/PaymentPage.vue";
 import SuccessPage from "../views/buyer/payment/SuccessPage.vue"
@@ -19,28 +19,30 @@ import MyOrderDetailView from "../views/buyer/order/MyOrderDetailView.vue";
 import MyProfilePage from "../views/buyer/mypage/MyProfilePage.vue";
 import SurveyView from "../views/buyer/survey/SurveyView.vue";
 import SurveyCreateView from "../views/buyer/survey/SurveyCreateView.vue";
+import ProductDetailView from "../views/seller/product/ProductDetailView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것
 const routes = [
     { path: '/', redirect: '/login' }, //우선 기본 경로를 로그인 페이지로
     { path: '/login', name: 'Login', component: LoginView },
-    { path: '/signup', name : 'Signup', component: SignupView},
-    { path: '/buyer', name: 'BuyerMain', component: BuyerMainView},
-    { path: '/cart', name: 'Cart', component: CartView},
-    { path: '/seller', name: 'Seller', component: SellerMainView},
-    { path: '/seller/product', name: 'MySeller', component: SellerMyView},
-    { path: '/seller/product/add', name: 'addProduct', component: ProductRegistView},
-    { path: '/pay-ready', name: 'BuyerPayReadyView',component:BuyerPayReadyView},
-    { path: '/payment', name: 'PaymentPage', component:PaymentPage},
-    { path: '/success', name: 'SuccessPage', component:SuccessPage },
+    { path: '/signup', name: 'Signup', component: SignupView },
+    { path: '/buyer', name: 'BuyerMain', component: BuyerMainView },
+    { path: '/cart', name: 'Cart', component: CartView },
+    { path: '/seller', name: 'Seller', component: SellerMainView },
+    { path: '/seller/product', name: 'MySeller', component: SellerMyView },
+    { path: '/seller/product/add', name: 'addProduct', component: ProductRegistView },
+    { path: '/pay-ready', name: 'BuyerPayReadyView', component: BuyerPayReadyView },
+    { path: '/payment', name: 'PaymentPage', component: PaymentPage },
+    { path: '/success', name: 'SuccessPage', component: SuccessPage },
     { path: '/fail', name: 'FailPage', component: FailPage },
-    { path: '/mypage', name :'MyPage', component: MyPageView },
-    { path: '/myorder', name:'MyOrderPage', component:MyOrderView},
-    { path: '/myorderdetails/:orderId', name: 'MyOrderDetailsPage', component:MyOrderDetailView},
-    { path: '/myprofile', name: 'MyProfilePage', component:MyProfilePage},
-    { path: '/survey', name:'SurveyPage', component:SurveyView},
-    { path: '/survey/create', name:'SurveyCreatePage', component : SurveyCreateView}
+    { path: '/mypage', name: 'MyPage', component: MyPageView },
+    { path: '/myorder', name: 'MyOrderPage', component: MyOrderView },
+    { path: '/myorderdetails/:orderId', name: 'MyOrderDetailsPage', component: MyOrderDetailView },
+    { path: '/myprofile', name: 'MyProfilePage', component: MyProfilePage },
+    { path: '/survey', name: 'SurveyPage', component: SurveyView },
+    { path: '/survey/create', name: 'SurveyCreatePage', component: SurveyCreateView },
+    { path: '/seller/product/:productId', name: 'ProductDetailPage', component: ProductDetailView }
 ]
 
 //Vue router 인스턴스 생성

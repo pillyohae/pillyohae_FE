@@ -19,9 +19,9 @@
 </template>
 
 <script setup>
-import ProductRegistForm from '../../components/seller/ProductRegistForm.vue';
-import router from "../../router";
-import { logout } from '../../utils/auth';
+import ProductRegistForm from '../../../components/seller/product/ProductRegistForm.vue';
+import router from "../../../router";
+import { logout } from '../../../utils/auth';
 
 
 const performLogout  = async () => {

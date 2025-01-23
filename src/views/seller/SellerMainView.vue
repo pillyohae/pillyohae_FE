@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import SellerProductForm from '../../components/seller/SellerProductForm.vue'
+import SellerProductForm from '../../components/seller/SellerMainForm.vue'
 import api from '../../api/axios'
 import { logout } from '../../utils/auth';
 import { onMounted, ref } from 'vue';

@@ -60,8 +60,8 @@
 </template>
 
 <script setup>
-import api from "../../api/axios";
-import router from "../../router";
+import api from "../../../api/axios";
+import router from "../../../router";
 import { reactive, ref } from "vue";
 import draggable from "vuedraggable";
 
