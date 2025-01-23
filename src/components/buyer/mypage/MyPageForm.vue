@@ -34,7 +34,7 @@
                     <v-card-text>
                         <v-icon color="info" large>mdi-pill</v-icon>
                     </v-card-text>
-                    <v-btn color="info" to="/myRecommendation">추천 결과 보기</v-btn>
+                    <v-btn color="info" to="/survey">추천 결과 보기</v-btn>
                 </v-card>
             </v-col>
         </v-row>

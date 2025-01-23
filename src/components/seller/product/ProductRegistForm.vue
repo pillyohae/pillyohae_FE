@@ -168,6 +168,12 @@ const handleSubmit = async () => {
             });
         }
 
+         // AI 이미지 생성 작업 요청
+         api.post(`/products/${productId}/ai-image`).then(() => {
+            console.log("AI 이미지 생성 요청 완료");
+        }).catch(err => {
+            console.error("AI 이미지 생성 요청 실패", err);
+        });
 
         alert('상품이 등록되었습니다!');
         router.push('/seller');

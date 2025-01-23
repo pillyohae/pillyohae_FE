@@ -19,7 +19,7 @@
 
             <!-- 상품 이미지 -->
             <v-col cols="2">
-              <v-img :src="product.images" alt="상품 이미지" height="100" />
+              <v-img :src="product.imageUrl" alt="상품 이미지" height="100" />
             </v-col>
 
             <!-- 상품 정보 -->

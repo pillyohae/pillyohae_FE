@@ -20,7 +20,7 @@
   // 발급 가능한 쿠폰 조회
   const fetchAvailableCoupons = async () => {
     try {
-      const response = await api.get('/coupons');
+      const response = await api.get('/coupons/available');
       availableCoupons.value = response.data.couponList;
     } catch (error) {
       console.error('발급 가능한 쿠폰 조회 실패:', error.response?.data || error.message);

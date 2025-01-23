@@ -22,7 +22,6 @@
   </template>
   
   <script setup>
-  import { ref } from "vue";
   import api from "../../../api/axios";
   
   const props = defineProps({

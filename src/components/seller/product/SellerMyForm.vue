@@ -15,7 +15,7 @@
           <v-row align-items="center">
             <!-- 상품 이미지 -->
             <v-col cols="2">
-              <v-img :src="product.image || 'https://via.placeholder.com/100'" alt="상품 이미지" height="80"></v-img>
+              <v-img :src="product.thumbnailImage" alt="상품 이미지" height="80"></v-img>
             </v-col>
 
             <!-- 상품 정보 -->

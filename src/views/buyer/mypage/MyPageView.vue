@@ -12,6 +12,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import MyPageForm from '../../../components/buyer/mypage/MyPageForm.vue';
+import BuyerNavigationBar from '../BuyerNavigationBar.vue';
 import api from '../../../api/axios';
 
 const userInfo = reactive({
