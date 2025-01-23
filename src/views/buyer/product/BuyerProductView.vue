@@ -1,17 +1,7 @@
 <template>
     <v-app>
-        <!-- 내비게이션 바 -->
-    <v-app-bar app>
-      <v-toolbar-title>Pill요해?</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <!-- 네비게이션 메뉴 -->
-      <v-btn text to="/buyer">홈</v-btn>
-      <v-btn text to="/survey">설문</v-btn>
-      <v-btn text to="/cart">장바구니</v-btn>
-      <v-btn text to="/mypage">마이페이지</v-btn>
-      <!-- 로그아웃 버튼 -->
-      <v-btn text color="red" @click="performLogout ">로그아웃</v-btn>
-    </v-app-bar>
+    <!-- 공통 네비게이션 바 컴포넌트 -->
+    <buyer-navigation-bar />
 
         <!-- 상품 상세 Form -->
         <v-main>
@@ -27,6 +17,7 @@
 </template>
 
 <script setup>
+import BuyerNavigationBar from "../BuyerNavigationBar.vue";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import api from "../../../api/axios";

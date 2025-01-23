@@ -1,16 +1,7 @@
 <template>
   <v-app>
-    <!-- 내비게이션 바 -->
-    <v-app-bar app>
-      <v-toolbar-title>Pill요해?</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn text to="/buyer">홈</v-btn>
-      <v-btn text to="/survey">설문</v-btn>
-      <v-btn text to="/cart">장바구니</v-btn>
-      <v-btn text to="/mypage">마이페이지</v-btn>
-      <v-btn text color="red" @click="performLogout ">로그아웃</v-btn>
-    </v-app-bar>
-
+     <!-- 공통 네비게이션 바 컴포넌트 -->
+     <buyer-navigation-bar />
     <!-- 장바구니 폼 -->
     <v-main>
       <CartForm :products="cart.products" :totalPrice="cart.totalPrice" @proceedToOrder="navigateToPayReady"
@@ -24,7 +15,7 @@ import { onMounted, reactive } from 'vue';
 import router from "../../router";
 import api from '../../api/axios';
 import CartForm from '../../components/buyer/CartForm.vue';
-import { logout } from '../../utils/auth';
+import BuyerNavigationBar from './BuyerNavigationBar.vue';
 
 // 장바구니 데이터 (반응형 상태)
 const cart = reactive({
@@ -42,11 +33,6 @@ const fetchCart = async () => {
   } catch (error) {
     console.error('장바구니 불러오기 실패:', error.response?.data || error.message);
   }
-};
-
-// 로그아웃 처리 함수
-const performLogout  = async () => {
-  await logout();
 };
 
 // 선택된 상품 데이터를 결제 페이지로 전달

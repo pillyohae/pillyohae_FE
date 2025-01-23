@@ -1,15 +1,7 @@
 <template>
     <v-app>
-        <!-- 내비게이션 바 -->
-        <v-app-bar app>
-            <v-toolbar-title>Pill요해?</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn text to="/buyer">홈</v-btn>
-            <v-btn text to="/survey">설문</v-btn>
-            <v-btn text to="/cart">장바구니</v-btn>
-            <v-btn text to="/mypage">마이페이지</v-btn>
-            <v-btn text color="red" @click="performLogout">로그아웃</v-btn>
-        </v-app-bar>
+        <!-- 공통 네비게이션 바 컴포넌트 -->
+    <buyer-navigation-bar />
 
         <!-- 결제 정보 폼 -->
         <v-main>
@@ -20,12 +12,11 @@
 </template>
 
 <script setup>
+import BuyerNavigationBar from '../BuyerNavigationBar.vue';
 import { ref, onMounted, reactive } from 'vue';
 import router from "../../../router";
 import BuyerPayReadyForm from '../../../components/buyer/payment/BuyerPayReadyForm.vue';
 import api from '../../../api/axios';
-import { logout } from '../../../utils/auth';
-
 
 // 반응형 상태 정의
 const selectedProducts = ref([]); // 선택된 상품
@@ -47,11 +38,6 @@ const fetchCoupons = async () => {
         console.error('쿠폰 목록 가져오기 실패:', error.response?.data || error.message);
         alert('쿠폰 목록을 가져올 수 없습니다.');
     }
-};
-
-// 로그아웃 처리
-const performLogout = async () => {
-    await logout();
 };
 
 // 컴포넌트가 마운트되면 실행되는 로직

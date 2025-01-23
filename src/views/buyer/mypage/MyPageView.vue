@@ -1,16 +1,7 @@
 <template>
     <v-app>
-        <v-app-bar app>
-            <v-toolbar-title>Pill요해?</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <!-- 네비게이션 메뉴 -->
-            <v-btn text to="/buyer">홈</v-btn>
-            <v-btn text to="/survey">설문</v-btn>
-            <v-btn text to="/cart">장바구니</v-btn>
-            <v-btn text to="/mypage">마이페이지</v-btn>
-            <!-- 로그아웃 버튼 -->
-            <v-btn text color="red" @click="performLogout">로그아웃</v-btn>
-        </v-app-bar>
+        <!-- 공통 네비게이션 바 컴포넌트 -->
+    <buyer-navigation-bar />
 
         <v-main>
             <my-page-form :userInfo="userInfo" :coupons="coupons"/>
@@ -22,7 +13,6 @@
 import { onMounted, reactive, ref } from 'vue';
 import MyPageForm from '../../../components/buyer/mypage/MyPageForm.vue';
 import api from '../../../api/axios';
-import { logout } from '../../../utils/auth';
 
 const userInfo = reactive({
     name: '',
@@ -45,8 +35,5 @@ onMounted(async () => {
     }
 })
 
-const performLogout = async () => {
-    await logout();
-}
 
 </script>
