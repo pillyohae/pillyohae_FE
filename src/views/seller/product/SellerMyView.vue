@@ -1,15 +1,6 @@
 <template>
   <v-app>
-    <!-- 내비게이션 바 -->
-    <v-app-bar app>
-      <v-toolbar-title>Pill요해?</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn text to="/seller">홈</v-btn>
-      <v-btn text to="/seller/product" color="green">내 상품 보기</v-btn>
-      <v-btn text to="#">요청 주문 내역</v-btn>
-      <v-btn text to="#">마이페이지</v-btn>
-      <v-btn text color="red" @click="performLogout">로그아웃</v-btn>
-    </v-app-bar>
+    <seller-navigation-bar/>
 
     <!-- 상품 리스트 -->
     <v-main>
@@ -23,6 +14,7 @@
 import { ref, computed, onMounted } from "vue";
 import api from "../../../api/axios";
 import SellerMyForm from "../../../components/seller/product/SellerMyForm.vue";
+import SellerNavigationBar from "../SellerNavigationBar.vue";
 import { logout } from "../../../utils/auth";
 import router from "../../../router";
 

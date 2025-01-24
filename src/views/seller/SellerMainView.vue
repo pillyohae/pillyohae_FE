@@ -1,18 +1,6 @@
 <template>
     <v-app>
-        <!-- 내비게이션 바 -->
-        <v-app-bar app>
-            <v-toolbar-title>Pill요해?</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <!-- 네비게이션 메뉴 -->
-            <v-btn text to="/seller">홈</v-btn>
-            <v-btn text to="/seller/product">내 상품 보기</v-btn>
-            <v-btn text to="#">요청 주문</v-btn>
-            <!-- 로그아웃 버튼 -->
-            <v-btn text color="red" @click="performLogout ">로그아웃</v-btn>
-        </v-app-bar>
-
-
+        <seller-navigation-bar/>
         <v-main>
             <seller-product-form :products="products"></seller-product-form>
         </v-main>
@@ -21,8 +9,8 @@
 
 <script setup>
 import SellerProductForm from '../../components/seller/SellerMainForm.vue'
+import SellerNavigationBar from './SellerNavigationBar.vue';
 import api from '../../api/axios'
-import { logout } from '../../utils/auth';
 import { onMounted, ref } from 'vue';
 
 const products = ref([]);
@@ -38,11 +26,6 @@ const fetchProducts = async () => {
     }
 
 }
-
-// 로그아웃 처리
-const performLogout  = async () => {
-        await logout();
-};
 
 onMounted(() => {
     fetchProducts();

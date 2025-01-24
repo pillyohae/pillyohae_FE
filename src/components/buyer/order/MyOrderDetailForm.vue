@@ -32,7 +32,7 @@
             <v-card-text>
                 <v-row v-for="product in orderProducts" :key="product.orderItemId" class="mb-4 align-center">
                     <v-col cols="2">
-                        <v-img :src="orderInfo.imageUrl" alt="상품 이미지" height="80" contain></v-img>
+                        <v-img :src="product.imageUrl" alt="상품 이미지" height="80" contain></v-img>
                     </v-col>
                     <v-col cols="6">
                         <p><strong>{{ product.orderItemName }}</strong></p>
