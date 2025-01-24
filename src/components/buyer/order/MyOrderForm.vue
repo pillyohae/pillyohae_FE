@@ -49,7 +49,14 @@
 
     <!-- 주문 목록 -->
     <v-row>
-      <v-col v-for="order in orders" :key="order.orderId" cols="12" md="6" @click="router.push(`/myorderdetails/${order.orderId}`)" style="cursor: pointer">
+      <v-col
+        v-for="order in orders"
+        :key="order.orderId"
+        cols="12"
+        md="6"
+        @click="$router.push(`/myorderdetails/${order.orderId}`)"
+        style="cursor: pointer"
+      >
         <v-card>
           <v-img :src="order.imageUrl" height="200px" />
           <v-card-title>{{ order.orderName }}</v-card-title>
@@ -62,16 +69,15 @@
 
     <!-- 페이지네이션 -->
     <v-pagination
-      v-model="currentPage"
-      :length="totalPages"
-      @input="emitPageChange"
+    :model-value="currentPage"
+                :length="totalPages"
+                @update:model-value="$emit('changePage', $event)"
     ></v-pagination>
   </v-container>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import router from "../../../router";
+import { ref, computed } from 'vue';
 
 const props = defineProps({
   orders: {
@@ -84,24 +90,26 @@ const props = defineProps({
   },
   startAt: {
     type: String,
-    default: null,
+    required: true,
   },
   endAt: {
     type: String,
-    default: null,
+    required: true,
+  },
+  currentPage: {
+    type: Number,
+    required: true,
   },
 });
 
 const emit = defineEmits(['changePage', 'changeDateRange']);
 
-const currentPage = ref(1);
 const startDateMenu = ref(false);
 const endDateMenu = ref(false);
 
-const localStartAt = ref(props.startAt ? new Date(props.startAt) : new Date());
-const localEndAt = ref(props.endAt ? new Date(props.endAt) : new Date());
+const localStartAt = ref(new Date(props.startAt));
+const localEndAt = ref(new Date(props.endAt));
 
-// 화면 표시용 포맷
 const startAtFormatted = computed(() =>
   localStartAt.value.toLocaleDateString('ko-KR', {
     year: 'numeric',
@@ -119,47 +127,37 @@ const endAtFormatted = computed(() =>
 );
 
 // 날짜 선택 창 닫기
-const closeStartDatePicker = () => {
-  startDateMenu.value = false;
-};
-const closeEndDatePicker = () => {
-  endDateMenu.value = false;
-};
+const closeStartDatePicker = () => (startDateMenu.value = false);
+const closeEndDatePicker = () => (endDateMenu.value = false);
 
-// 서버에 맞는 날짜 형식으로 변환
-const formatDateToServer = (date) => {
-  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return offsetDate.toISOString().slice(0, 19); // 초 단위 제외
-};
-
-// 날짜 범위 전달
 const emitDateRange = () => {
+  // 시작 날짜: 00:00:00
+  const startAtFormatted = new Date(localStartAt.value);
+  startAtFormatted.setHours(0, 0, 0, 0);
+
+  // 종료 날짜: 23:59:59
+  const endAtFormatted = new Date(localEndAt.value);
+  endAtFormatted.setHours(23, 59, 59, 999);
+
+  // LocalDateTime 형식으로 변환
+  const toLocalDateTime = (date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+
   emit('changeDateRange', {
-    startAt: formatDateToServer(localStartAt.value), // 서버에 맞는 시작 날짜
-    endAt: formatDateToServer(localEndAt.value),   // 서버에 맞는 종료 날짜
+    startAt: toLocalDateTime(startAtFormatted),
+    endAt: toLocalDateTime(endAtFormatted),
   });
 };
 
-// 페이지 변경 전달
-const emitPageChange = (page) => {
-  emit('changePage', page);
-};
 
-// 주문 시간 포맷
+
+// 날짜 형식 변환
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('ko-KR', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
   });
 };
-
-// props 변화 감지 및 로컬 데이터 업데이트
-watch([() => props.startAt, () => props.endAt], ([newStart, newEnd]) => {
-  localStartAt.value = newStart ? new Date(newStart) : new Date();
-  localEndAt.value = newEnd ? new Date(newEnd) : new Date();
-});
 </script>
