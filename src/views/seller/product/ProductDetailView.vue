@@ -25,16 +25,11 @@
   import SellerNavigationBar from '../SellerNavigationBar.vue';
   import api from '../../../api/axios';
   import { useRoute, useRouter } from 'vue-router';
-  import { logout } from '../../../utils/auth';
   
   const product = ref(null);
   
   const router = useRouter();
   const route = useRoute();
-  
-  const performLogout = async () => {
-    await logout(route);
-  };
   
   const fetchProductDetails = async () => {
     const productId = route.params.productId;

@@ -10,19 +10,19 @@
         </v-row>
 
         <!-- 상품 수정 Form -->
-        <product-edit-form :initialProduct="initialProduct" />
+        <product-edit-form @regeneratePersona="regeneratePersonaImage" :initialProduct="initialProduct" />
     </v-container>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import ProductEditForm from '../../../components/seller/product/ProductEditForm.vue';
 import { useRoute, useRouter } from 'vue-router';
+import api from '../../../api/axios';
 
 const route = useRoute();
 const router = useRouter();
 
-// 라우터에서 데이터를 받음
 const initialProduct = ref(
     route.query.productData ? JSON.parse(route.query.productData) : null
 );
@@ -32,11 +32,26 @@ if (!initialProduct.value) {
     router.push(`/seller/product/${route.params.productId}`);
 }
 
+// 이전 페이지로 돌아가기
 const goBack = () => {
     router.push(`/seller/product/${route.params.productId}`);
 };
 
+// 수정 취소
 const cancelEdit = () => {
     router.push(`/seller/product/${route.params.productId}`);
+};
+
+// 페르소나 이미지 재생성 핸들러
+const regeneratePersonaImage = async (productId) => {
+    try {
+        const response = await api.post(`/products/${productId}/ai-image`);
+        alert('페르소나 이미지가 성공적으로 재생성되었습니다.');
+        // 새로운 데이터를 반영
+        initialProduct.value.images = response.data.images;
+    } catch (error) {
+        console.error('페르소나 이미지 재생성 실패:', error.response?.data || error.message);
+        alert('페르소나 이미지 재생성에 실패했습니다.');
+    }
 };
 </script>

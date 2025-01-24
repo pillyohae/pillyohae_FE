@@ -3,9 +3,10 @@
         <v-row>
             <!-- 서버에서 가져온 상품 목록을 반복해서 보여줌 -->
             <v-col v-for="product in products" :key="product.productId" cols="12" md="4">
-                <v-card @click="goToProductDetail(product.productId)">
+                <v-card>
                     <!-- 상품 이미지 -->
-                    <v-img :src="product.thumbnailImage || 'https://placekitten.com/150/150'" alt="제품 이미지" height="150">
+                    <v-img :src="product.thumbnailImage || 'https://placekitten.com/150/150'" alt="제품 이미지" height="150"
+                    @click="goToProductDetail(product.productId)">
                     </v-img>
                     <!-- 상품 이름, 회사, 카테고리, 가격 -->
                     <v-card-title>{{ product.productName }}</v-card-title>
