@@ -12,8 +12,9 @@
 </template>
 
 <script setup>
+import { logout } from '../../utils/auth';
 // 로그아웃 처리
-const performLogout  = async () => {
+const performLogout = async () => {
         await logout();
 };
 </script>
