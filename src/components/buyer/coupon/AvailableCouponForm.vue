@@ -54,10 +54,9 @@
     try {
       await api.post(`/coupons/${couponId}/issue`);
       alert("쿠폰이 발급되었습니다.");
-      props.issuedCoupons.push({ couponId });
     } catch (error) {
       console.error("쿠폰 발급 실패:", error.response?.data || error.message);
-      alert("쿠폰 발급에 실패했습니다.");
+      alert("쿠폰을 중복해서 발급받을 수 없습니다!");
     }
   };
   </script>

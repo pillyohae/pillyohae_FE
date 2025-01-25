@@ -22,6 +22,7 @@ import api from '../../../api/axios';
 
 const route = useRoute();
 const router = useRouter();
+const isLoading = ref(false);
 
 const initialProduct = ref(
     route.query.productData ? JSON.parse(route.query.productData) : null
@@ -42,16 +43,22 @@ const cancelEdit = () => {
     router.push(`/seller/product/${route.params.productId}`);
 };
 
+
 // 페르소나 이미지 재생성 핸들러
 const regeneratePersonaImage = async (productId) => {
+    isLoading.value = true;
     try {
-        const response = await api.post(`/products/${productId}/ai-image`);
+        const response = await api.post(`/products/${productId}/ai-image`, {}, { timeout: 0 }); // 타임아웃 무한 설정
         alert('페르소나 이미지가 성공적으로 재생성되었습니다.');
-        // 새로운 데이터를 반영
         initialProduct.value.images = response.data.images;
     } catch (error) {
         console.error('페르소나 이미지 재생성 실패:', error.response?.data || error.message);
         alert('페르소나 이미지 재생성에 실패했습니다.');
+    } finally {
+        isLoading.value = false;
     }
 };
 </script>
+
+<style>
+</style>

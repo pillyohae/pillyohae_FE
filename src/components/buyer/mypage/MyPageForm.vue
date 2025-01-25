@@ -5,7 +5,7 @@
             <v-card-text>
                 <p>이름: {{ userInfo.name }}</p>
                 <p>이메일: {{ userInfo.email }}</p>
-                <v-btn color="green" to = '/myprofile'>프로필 보기</v-btn>
+                <v-btn color="green" to="/myprofile">프로필 보기</v-btn>
             </v-card-text>
         </v-card>
 
@@ -39,23 +39,27 @@
             </v-col>
         </v-row>
 
-         <!-- 쿠폰 다이얼로그 -->
-         <v-dialog v-model="showCouponDialog" max-width="600px">
+        <!-- 쿠폰 다이얼로그 -->
+        <v-dialog v-model="showCouponDialog" max-width="600px">
             <v-card>
                 <v-card-title>내 쿠폰 목록</v-card-title>
                 <v-card-text>
-                    <v-row v-if="coupons.length > 0">
-                        <v-col v-for="coupon in coupons" :key="coupon.couponId">
-                            <strong>{{ coupon.couponName }}</strong>
-                            <p>{{ coupon.couponDescription }}</p>
-                            <p v-if="coupon.discountType === 'PERCENTAGE'">
-                                {{ coupon.fixedRate }}% (최대 {{ coupon.maxDiscountAmount }}원)
-                            </p>
-                            <p v-else-if="coupon.discountType === 'FIXED_AMOUNT'">
-                                {{ coupon.fixedAmount }}원
-                            </p>
-                        </v-col>
-                    </v-row>
+                    <v-col v-if="coupons.length > 0">
+                        <v-card v-for="coupon in coupons" :key="coupon.couponId" class="mb-4" outlined>
+                            <v-card-title>{{ coupon.couponName }}</v-card-title>
+                            <v-card-subtitle class="grey--text text--darken-1">
+                                {{ coupon.couponDescription }}
+                            </v-card-subtitle>
+                            <v-card-text>
+                                <p v-if="coupon.discountType === 'PERCENTAGE'">
+                                    할인: {{ coupon.fixedRate }}% (최대 {{ coupon.maxDiscountAmount }}원)
+                                </p>
+                                <p v-else-if="coupon.discountType === 'FIXED_AMOUNT'">
+                                    할인: {{ coupon.fixedAmount }}원
+                                </p>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
                     <p v-else>사용 가능한 쿠폰이 없습니다.</p>
                 </v-card-text>
                 <v-card-actions>
@@ -63,9 +67,9 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
     </v-container>
 </template>
+
 
 
 <script setup>
@@ -90,5 +94,27 @@ const showCouponDialog = ref(false);
 <style scoped>
 .text-center {
     text-align: center;
+}
+
+.v-card {
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.v-card-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.v-card-subtitle {
+    font-size: 14px;
+    color: #616161;
+}
+
+.v-card-text {
+    font-size: 14px;
+    margin-top: 8px;
 }
 </style>

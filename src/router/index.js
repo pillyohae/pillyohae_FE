@@ -27,6 +27,7 @@ import AvailableCouponView from "../views/buyer/coupon/AvailableCouponView.vue";
 import SurveyRecommendationView from "../views/buyer/survey/SurveyRecommendationView.vue";
 import AdminMainView from "../views/admin/AdminMainView.vue";
 import AdminCouponView from "../views/admin/AdminCouponView.vue";
+import AdminCouponRegistView from "../views/admin/AdminCouponRegistView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것
@@ -57,7 +58,7 @@ const routes = [
     { path: '/survey/recommendations/:surveyId', name: 'SurveyRecommendationView', component: SurveyRecommendationView},
     { path: '/admin', name:'AdminMainView', component: AdminMainView},
     { path: '/admin/coupon', name: 'AdminCouponView', component: AdminCouponView},
-    
+    { path: '/admin/coupon/register', name: 'AdminCouponRegistView', component: AdminCouponRegistView},
 ]
 
 //Vue router 인스턴스 생성

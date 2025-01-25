@@ -39,6 +39,8 @@ const loginUser = async (credentials) => {
                 router.push('/seller'); // 판매자 페이지로 이동
             } else if (payload.role === 'BUYER') {
                 router.push('/buyer'); // 구매자 페이지로 이동
+            } else if (payload.role === 'ADMIN') {
+                router.push('/admin'); //관리자 페이지로 이동
             } else {
                 alert('알 수 없는 사용자 권한입니다.');
             }

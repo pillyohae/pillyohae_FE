@@ -18,6 +18,7 @@ instance.interceptors.request.use(
     (config) => {
         //인증이 필요없는 경로를 정의
         const publicPaths = [
+            '/refresh',
             '/users/login', // 로그인
             '/users/signup', // 회원가입
             '/toss/fail', // 결제 실패

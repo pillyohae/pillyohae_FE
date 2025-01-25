@@ -4,7 +4,7 @@
     <h2 class="my-4">결제정보 입력</h2>
 
     <!-- 배송 정보 -->
-    <v-card class="mb-4">
+    <v-card outlined class="mb-4">
       <v-card-title>배송 정보</v-card-title>
       <v-card-text>
         <p>{{ deliveryInfo.name }} | {{ deliveryInfo.phoneNumber }}</p>
@@ -14,7 +14,7 @@
     </v-card>
 
     <!-- 주문 상품 목록 -->
-    <v-card class="mb-4">
+    <v-card outlined class="mb-4">
       <v-card-title>구매 영양제 ({{ selectedProducts.length }})</v-card-title>
       <v-card-text>
         <v-row v-for="product in selectedProducts" :key="product.cartId" class="mb-2">
@@ -25,7 +25,7 @@
     </v-card>
 
     <!-- 쿠폰 선택 -->
-    <v-card class="mb-4">
+    <v-card outlined class="mb-4">
       <v-card-title>쿠폰 적용</v-card-title>
       <v-card-text>
         <p>선택된 쿠폰: {{ selectedCoupon ? selectedCoupon.couponName : '없음' }}</p>
@@ -34,7 +34,7 @@
     </v-card>
 
     <!-- 결제 금액 -->
-    <v-card class="mb-4">
+    <v-card outlined class="mb-4">
       <v-card-title>결제 금액</v-card-title>
       <v-card-text>
         <p>상품 금액: {{ formatPrice(totalPrice) }}원</p>
@@ -46,26 +46,31 @@
     <!-- 결제 버튼 -->
     <v-btn color="green" block @click="openPayment">결제하기</v-btn>
 
-
     <!-- 쿠폰 선택 다이얼로그 -->
     <v-dialog v-model="couponDialog" max-width="600px">
       <v-card>
         <v-card-title>사용 가능한 쿠폰</v-card-title>
         <v-card-text>
-          <v-row v-for="coupon in coupons" :key="coupon.couponId" class="mb-2">
-            <v-col>
-              <strong>{{ coupon.couponName }}</strong>
-              <p>{{ coupon.couponDescription }}</p>
-              <p>
-                할인:
-                <span v-if="coupon.discountType === 'PERCENTAGE'">
-                  {{ coupon.fixedRate }}% (최대 {{ formatPrice(coupon.maxDiscountAmount) }}원)
-                </span>
-                <span v-else-if="coupon.discountType === 'FIXED_AMOUNT'">
-                  {{ formatPrice(coupon.fixedAmount) }}원
-                </span>
-              </p>
-              <v-btn color="green" text @click="applyCoupon(coupon)">적용</v-btn>
+          <v-row>
+            <v-col v-for="coupon in coupons" :key="coupon.couponId" cols="12" class="mb-4">
+              <v-card outlined>
+                <v-card-title>{{ coupon.couponName }}</v-card-title>
+                <v-card-subtitle class="grey--text text--darken-1">
+                  {{ coupon.couponDescription }}
+                </v-card-subtitle>
+                <v-card-text>
+                  할인:
+                  <span v-if="coupon.discountType === 'PERCENTAGE'">
+                    {{ coupon.fixedRate }}% (최대 {{ formatPrice(coupon.maxDiscountAmount) }}원)
+                  </span>
+                  <span v-else-if="coupon.discountType === 'FIXED_AMOUNT'">
+                    {{ formatPrice(coupon.fixedAmount) }}원
+                  </span>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn color="green" block @click="applyCoupon(coupon)">적용</v-btn>
+                </v-card-actions>
+              </v-card>
             </v-col>
           </v-row>
         </v-card-text>
@@ -76,6 +81,7 @@
     </v-dialog>
   </v-container>
 </template>
+
 
 
 <script setup>
@@ -193,3 +199,31 @@ const openPayment = async () => {
   }
 };
 </script>
+
+<style scoped>
+.v-card {
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.v-card-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.v-card-subtitle {
+  font-size: 14px;
+  color: #616161;
+}
+
+.v-card-text {
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.text-right {
+  text-align: right;
+}
+</style>
