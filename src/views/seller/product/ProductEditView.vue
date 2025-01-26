@@ -10,7 +10,7 @@
         </v-row>
 
         <!-- 상품 수정 Form -->
-        <product-edit-form @regeneratePersona="regeneratePersonaImage" :initialProduct="initialProduct" />
+        <product-edit-form @regeneratePersona="regeneratePersonaImage"  @submitProduct="updateProduct" :initialProduct="initialProduct" />
     </v-container>
 </template>
 
@@ -58,6 +58,19 @@ const regeneratePersonaImage = async (productId) => {
         isLoading.value = false;
     }
 };
+
+// 상품 수정 API 호출
+const updateProduct = async (updatedProduct) => {
+  try {
+    await api.put(`/products/${updatedProduct.productId}`, updatedProduct);
+    alert('상품 정보가 성공적으로 수정되었습니다.');
+    router.push(`/seller/product/${updatedProduct.productId}`);
+  } catch (error) {
+    console.error('상품 수정 실패:', error.response?.data || error.message);
+    alert('상품 정보 수정에 실패했습니다.');
+  }
+};
+
 </script>
 
 <style>

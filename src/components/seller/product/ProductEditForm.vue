@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" @submit.prevent="handleSubmit">
+  <v-form ref="form" @submit.prevent="emitSubmit">
     <!-- 상품 이름 -->
     <v-text-field v-model="product.productName" label="영양제 이름 *" required />
 
@@ -22,6 +22,7 @@
       {{ category }}
     </v-btn>
 
+    <!-- 페르소나 이미지 -->
     <h3>
       페르소나 이미지
       <v-btn small color="blue" @click="emitPersonaRegeneration">
@@ -42,24 +43,24 @@
     <v-row class="mb-12">
       <v-col cols="auto" v-if="mainImagePreview">
         <v-img :src="mainImagePreview" alt="메인 이미지 미리보기" height="100" />
-        <v-btn small color="red" @click="removeMainImage">삭제</v-btn>
+        <v-btn small color="red" @click="removeMainImage(product.images.find(img => img.position === 1)?.imageId)">삭제</v-btn>
       </v-col>
     </v-row>
 
     <!-- 상세 이미지 업로드 -->
     <h3>상세 이미지 업로드 *</h3>
-    <input type="file" multiple accept="image/*" @change="handleImageSelection" />
+    <input type="file" multiple accept="image/*" @change="uploadDetailImages" />
     <draggable v-model="imagePreviews" :options="{ animation: 200 }" itemKey="index" class="drag-container">
       <template #item="{ element, index }">
         <div class="image-item">
-          <v-img :src="element" alt="상세 이미지 미리보기" height="80" />
-          <v-btn small color="red" @click="removeImage(index)">삭제</v-btn>
+          <v-img :src="element.imageUrl" alt="상세 이미지 미리보기" height="80" />
+          <v-btn small color="red" @click="removeDetailImage(element.imageId, index)">삭제</v-btn>
         </div>
       </template>
     </draggable>
 
     <br>
-    
+
     <!-- 가격과 재고 -->
     <v-row>
       <v-text-field v-model="product.price" label="가격 *" type="number" required />
@@ -74,12 +75,17 @@
 <script setup>
 import { reactive, ref, defineProps, defineEmits } from 'vue';
 import draggable from "vuedraggable";
+import api from "../../../api/axios";
 
-const emit = defineEmits(['regeneratePersona']);
+const emit = defineEmits(['regeneratePersona', 'submitProduct']);
 
-const emitPersonaRegeneration= () => {
+const emitPersonaRegeneration = () => {
   emit('regeneratePersona', product.productId);
-}
+};
+
+const emitSubmit = () => {
+  emit('submitProduct', { ...product });
+};
 
 const props = defineProps({
   initialProduct: {
@@ -88,56 +94,105 @@ const props = defineProps({
   },
 });
 
-// 데이터 초기화
 const product = reactive({ ...props.initialProduct });
 const categories = ref(['멀티비타민', '관절/뼈', '눈 건강', '간 건강', '스트레스', '수면', '장 건강']);
 
-// 이미지 분리
 const personaImage = ref(product.images.find(img => img.position === 0)?.imageUrl || null);
 const mainImagePreview = ref(product.images.find(img => img.position === 1)?.imageUrl || null);
-const imagePreviews = ref(
-  product.images.filter(img => img.position > 1).map(img => img.imageUrl)
-);
+const imagePreviews = ref(product.images.filter(img => img.position > 1));
 
-// 메인이미지 변경 핸들러
-const handleMainImageSelection = (event) => {
+// 메인 이미지 업로드
+const handleMainImageSelection = async (event) => {
   const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      mainImagePreview.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
+  if (!file) return;
+
+  const existingMainImageId = product.images.find(img => img.position === 1)?.imageId;
+
+  if (existingMainImageId) {
+    // 기존 메인 이미지 삭제
+    const confirmDelete = confirm(
+      '이미 메인 이미지가 등록되어 있습니다. 기존 이미지를 삭제하고 새로운 이미지를 등록하시겠습니까?'
+    );
+    if (!confirmDelete) return;
+
+    await removeMainImage(existingMainImageId); // 기존 메인 이미지 삭제
   }
-};
 
-// 상세이미지 추가 핸들러
-const handleImageSelection = (event) => {
-  const files = Array.from(event.target.files);
-  files.forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreviews.value.push(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  });
-};
-
-// 상세이미지 삭제
-const removeImage = (index) => {
-  imagePreviews.value.splice(index, 1);
-};
-
-// 저장 로직
-const handleSubmit = async () => {
+  // 새로운 메인 이미지 업로드
   try {
-    console.log('저장 데이터:', product);
-    // 저장 로직 추가
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await api.post(
+      `/products/${product.productId}/images/upload-main-image`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+    mainImagePreview.value = response.data.fileUrl; // 프리뷰 업데이트
+    alert('새로운 메인 이미지가 등록되었습니다.');
   } catch (error) {
-    console.error('저장 실패:', error.message);
+    console.error('메인 이미지 업로드 실패:', error.response?.data || error.message);
+    alert('메인 이미지 업로드에 실패했습니다.');
   }
 };
+
+// 상세 이미지 업로드
+const uploadDetailImages = async (event) => {
+  const files = Array.from(event.target.files);
+  for (const file of files) {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const response = await api.post(`/products/${product.productId}/images`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      imagePreviews.value.push({
+        imageId: null, // 새로운 이미지는 아직 ID가 없으므로 null
+        imageUrl: response.data.fileUrl, // 프리뷰 업데이트
+      });
+      alert('상세 이미지가 성공적으로 등록되었습니다.');
+    } catch (error) {
+      console.error('상세 이미지 업로드 실패:', error.response?.data || error.message);
+      alert('상세 이미지 업로드에 실패했습니다.');
+    }
+  }
+};
+
+// 이미지 삭제
+const removeMainImage = async (imageId) => {
+  if (!imageId) {
+    alert('이미지 ID가 없습니다.');
+    return;
+  }
+
+  try {
+    await api.delete(`/products/${product.productId}/images/${imageId}`);
+    mainImagePreview.value = null;
+    alert('메인 이미지가 삭제되었습니다.');
+  } catch (error) {
+    console.error('메인 이미지 삭제 실패:', error.response?.data || error.message);
+    alert('메인 이미지 삭제에 실패했습니다.');
+  }
+};
+
+const removeDetailImage = async (imageId, index) => {
+  try {
+    if (!imageId) {
+      imagePreviews.value.splice(index, 1);
+      return;
+    }
+    await api.delete(`/products/${product.productId}/images/${imageId}`);
+    imagePreviews.value.splice(index, 1);
+    alert('이미지가 성공적으로 삭제되었습니다.');
+  } catch (error) {
+    console.error('이미지 삭제 실패:', error.response?.data || error.message);
+    alert('이미지 삭제에 실패했습니다.');
+  }
+};
+
 </script>
+
 
 <style scoped>
 .drag-container {
