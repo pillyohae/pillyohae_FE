@@ -22,11 +22,23 @@
       {{ category }}
     </v-btn>
 
-    <!-- 페르소나 이미지 -->
-    <h3>
+     <!-- 페르소나 이미지 -->
+     <h3>
       페르소나 이미지
-      <v-btn small color="blue" @click="emitPersonaRegeneration">
+      <v-btn
+        small
+        color="blue"
+        @click="emitPersonaRegeneration"
+        :disabled="isLoading"
+      >
         재생성
+        <v-progress-circular
+          v-if="isLoading"
+          indeterminate
+          size="20"
+          color="green"
+          class="ml-2"
+        />
       </v-btn>
     </h3>
     <v-img
@@ -77,10 +89,11 @@ import { reactive, ref, defineProps, defineEmits } from 'vue';
 import draggable from "vuedraggable";
 import api from "../../../api/axios";
 
-const emit = defineEmits(['regeneratePersona', 'submitProduct']);
+const emit = defineEmits(['regeneratePersona', 'submitProduct', 'loadingStateUpdate']);
 
 const emitPersonaRegeneration = () => {
   emit('regeneratePersona', product.productId);
+  emit('loadingStateUpdate', true); // 로딩 시작 알림
 };
 
 const emitSubmit = () => {
@@ -91,6 +104,10 @@ const props = defineProps({
   initialProduct: {
     type: Object,
     required: true,
+  },
+  isLoading: {
+    type: Boolean,
+    default: false,
   },
 });
 
