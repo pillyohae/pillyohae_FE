@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <h2>로그인</h2>
+    <div class="form-container">
         <!-- 자식 컴포넌트인 LoginForm 에서 emit 으로 login 이벤트를 발생시키면 loginUser 메서드로 처리함을 명시-->
         <LoginForm @login="loginUser" />
     </div>
@@ -56,4 +55,5 @@ const loginUser = async (credentials) => {
 </script>
 
 
-<style></style>
+<style>
+</style>
