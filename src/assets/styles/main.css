@@ -1,0 +1,54 @@
+/* src/assets/styles/main.css */
+
+/* 카드 스타일 */
+.product-card {
+    width: 350px;
+    /* 카드 크기 조정 */
+    margin: 0 auto;
+    /* 중앙 정렬 */
+    border: 1px solid #e0e0e0;
+    /* 카드 경계선 추가 */
+    border-radius: 10px;
+    /* 모서리 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* 카드 그림자 추가 */
+    overflow: hidden;
+    /* 카드 내부 이미지 잘림 방지 */
+    background-color: #ffffff;
+    /* 카드 배경색 */
+    transition: transform 0.2s ease-in-out;
+    /* 카드 호버 애니메이션 */
+}
+
+/* 카드 호버 시 효과 */
+.product-card:hover {
+    transform: translateY(-5px);
+    /* 약간 위로 올라가는 효과 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    /* 그림자 강조 */
+}
+
+/* 이미지 스타일 */
+.product-image {
+    border-bottom: 1px solid #e0e0e0;
+    /* 이미지 하단 경계선 */
+}
+
+/* 텍스트 스타일 */
+.product-title {
+    font-weight: bold;
+    /* 제목 강조 */
+    font-size: 18px;
+    /* 제목 크기 */
+    margin-bottom: 10px;
+    /* 아래 여백 추가 */
+}
+
+.product-subtitle {
+    font-size: 14px;
+    /* 부제목 크기 */
+    color: #000000;
+    /* 부제목 색상 */
+    margin-bottom: 5px;
+    /* 아래 여백 추가 */
+}

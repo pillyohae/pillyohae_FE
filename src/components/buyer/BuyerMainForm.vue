@@ -50,6 +50,7 @@
 </template>
 
 <script setup>
+import "../../assets/styles/main.css"
 import { ref } from 'vue'; // 반응형 데이터 관리
 import api from '../../api/axios'; // 서버와 통신을 위한 Axios 가져오기
 import { useRouter } from 'vue-router';
@@ -119,50 +120,4 @@ const addToCart = async () => {
 
 <style scoped>
 
-/* 카드 디자인 */
-.product-card {
-    border: 1px solid #e0e0e0;
-    /* 카드 경계선 */
-    border-radius: 10px;
-    /* 모서리를 둥글게 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* 부드러운 그림자 */
-    overflow: hidden;
-    /* 이미지와 텍스트가 잘리지 않도록 설정 */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    /* 호버 시 애니메이션 */
-}
-
-/* 카드 호버 효과 */
-.product-card:hover {
-    transform: translateY(-5px);
-    /* 위로 살짝 올라감 */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    /* 그림자 강조 */
-}
-
-/* 이미지 스타일 */
-.product-image {
-    border-bottom: 1px solid #e0e0e0;
-    /* 이미지 아래 경계선 */
-}
-
-/* 텍스트 스타일 */
-.product-title {
-    font-weight: bold;
-    /* 제목 강조 */
-    font-size: 18px;
-    /* 제목 크기 */
-    margin-bottom: 10px;
-    /* 아래 여백 */
-}
-
-.product-subtitle {
-    font-size: 14px;
-    /* 부제목 크기 */
-    color: #555;
-    /* 부제목 색상 */
-    margin-bottom: 5px;
-    /* 아래 여백 */
-}
 </style>
