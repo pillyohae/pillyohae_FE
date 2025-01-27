@@ -1,18 +1,18 @@
 <template>
-    <v-container>
-        <v-row>
+    <v-container class="product-container">
+        <v-row style="row-gap: 30px;">
             <!-- 서버에서 가져온 상품 목록을 반복해서 보여줌 -->
             <v-col v-for="product in products" :key="product.productId" cols="12" md="4">
-                <v-card>
+                <v-card class="product-card">
                     <!-- 상품 이미지 -->
-                    <v-img :src="product.thumbnailImage || 'https://placekitten.com/150/150'" alt="제품 이미지" height="150"
-                    @click="goToProductDetail(product.productId)">
-                    </v-img>
+                    <v-img :src="product.thumbnailImage || 'https://placekitten.com/150/150'" alt="제품 이미지" height="200"
+                        @click="goToProductDetail(product.productId)" class="product-image"></v-img>
                     <!-- 상품 이름, 회사, 카테고리, 가격 -->
-                    <v-card-title>{{ product.productName }}</v-card-title>
-                    <v-card-subtitle>회사명: {{ product.companyName }}</v-card-subtitle>
-                    <v-card-subtitle>카테고리: {{ product.category }}</v-card-subtitle>
-                    <v-card-subtitle>가격: {{ product.price.toLocaleString() }}원</v-card-subtitle>
+                    <v-card-title class="product-title">{{ product.productName }}</v-card-title>
+                    <v-card-subtitle class="product-subtitle">회사명: {{ product.companyName }}</v-card-subtitle>
+                    <v-card-subtitle class="product-subtitle">카테고리: {{ product.category }}</v-card-subtitle>
+                    <v-card-subtitle class="product-subtitle">가격: {{ product.price.toLocaleString()
+                        }}원</v-card-subtitle>
                     <!-- 장바구니 버튼 -->
                     <v-card-actions>
                         <v-btn color="green" block @click="openDialog(product)">장바구니</v-btn>
@@ -117,5 +117,52 @@ const addToCart = async () => {
 };
 </script>
 
+<style scoped>
 
-<style></style>
+/* 카드 디자인 */
+.product-card {
+    border: 1px solid #e0e0e0;
+    /* 카드 경계선 */
+    border-radius: 10px;
+    /* 모서리를 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* 부드러운 그림자 */
+    overflow: hidden;
+    /* 이미지와 텍스트가 잘리지 않도록 설정 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* 호버 시 애니메이션 */
+}
+
+/* 카드 호버 효과 */
+.product-card:hover {
+    transform: translateY(-5px);
+    /* 위로 살짝 올라감 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    /* 그림자 강조 */
+}
+
+/* 이미지 스타일 */
+.product-image {
+    border-bottom: 1px solid #e0e0e0;
+    /* 이미지 아래 경계선 */
+}
+
+/* 텍스트 스타일 */
+.product-title {
+    font-weight: bold;
+    /* 제목 강조 */
+    font-size: 18px;
+    /* 제목 크기 */
+    margin-bottom: 10px;
+    /* 아래 여백 */
+}
+
+.product-subtitle {
+    font-size: 14px;
+    /* 부제목 크기 */
+    color: #555;
+    /* 부제목 색상 */
+    margin-bottom: 5px;
+    /* 아래 여백 */
+}
+</style>
