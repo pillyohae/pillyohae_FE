@@ -40,7 +40,7 @@
   const addAllToCart = async () => {
     try {
       for (const product of props.recommendations) {
-        await api.post("/cart", { productId: product.productId, quantity: 1 });
+        await api.post("/carts", { productId: product.productId, quantity: 1 });
       }
       alert("추천 상품이 장바구니에 추가되었습니다.");
     } catch (error) {
