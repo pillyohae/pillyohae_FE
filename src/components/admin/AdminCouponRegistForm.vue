@@ -14,20 +14,24 @@
         <v-text-field v-if="couponData.discountType === 'PERCENTAGE'" v-model.number="couponData.maxDiscountAmount"
             label="최대 할인 금액" type="number" required />
 
+        <!-- 만료 유형 -->
+        <v-select v-model="couponData.expiredType" :items="expiredTypes" item-title="text" item-value="value"
+            label="만료 유형" required />
+
+        <!-- 만료일 (FIXED_DATE와 DURATION_BASED 공통) -->
+        <v-menu v-model="dateMenu" :close-on-content-click="false" transition="scale-transition" offset-y>
+            <template v-slot:activator="{ props }">
+                <v-text-field v-bind="props" v-model="formattedExpiredAt" label="발급 만료일" readonly required />
+            </template>
+            <v-date-picker v-model="localExpiredAt" @update:modelValue="updateExpiredAt" />
+        </v-menu>
+
+        <!-- 쿠폰 라이프타임 (DURATION_BASED일 경우) -->
+        <v-text-field v-if="couponData.expiredType === 'DURATION_BASED'" v-model.number="couponData.couponLifetime"
+            label="쿠폰 라이프타임 (일)" type="number" required />
+
         <!-- 최소 결제 금액 -->
         <v-text-field v-model.number="couponData.minimumPrice" label="최소 결제 금액" type="number" required />
-
-        <!-- 만료일 -->
-        <v-menu v-model="dateMenu" :close-on-content-click="false" transition="scale-transition" offset-y>
-    <template v-slot:activator="{ props }">
-        <v-text-field v-bind="props" v-model="formattedExpiredAt" label="만료일" readonly />
-    </template>
-    <v-date-picker 
-        v-model="localExpiredAt" 
-        @update:modelValue="updateExpiredAt" 
-    />
-</v-menu>
-
 
         <!-- 쿠폰 발급 수 -->
         <v-text-field v-model.number="couponData.maxIssueCount" label="발급 가능한 쿠폰 수" type="number" required />
@@ -43,25 +47,30 @@
 import { reactive, ref, computed, defineEmits } from 'vue';
 
 const discountTypes = ['FIXED_AMOUNT', 'PERCENTAGE'];
+const expiredTypes = [
+    { text: '정액 기한 만료 (예: 2025-02-20)', value: 'FIXED_DATE' },
+    { text: '정액 일정 기간 유지 (예: 3일)', value: 'DURATION_BASED' }
+];
 const emit = defineEmits(['submitCoupon']);
 
 // 날짜를 LocalDateTime 형식으로 변환하는 유틸리티 함수
-const formatDateToLocalDateTime = (date) => {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+const formatDateToLocalDateTimeKST = (date) => {
+    const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC 시간 + 9시간
+    return `${kstDate.getFullYear()}-${String(kstDate.getMonth() + 1).padStart(2, '0')}-${String(kstDate.getDate()).padStart(2, '0')}T${String(kstDate.getHours()).padStart(2, '0')}:${String(kstDate.getMinutes()).padStart(2, '0')}:${String(kstDate.getSeconds()).padStart(2, '0')}`;
 };
-
 
 const couponData = reactive({
     couponName: '',
     couponDescription: '',
     discountType: 'FIXED_AMOUNT',
-    expiredType: "FIXED_DATE",
+    expiredType: 'FIXED_DATE',
     fixedAmount: null,
     fixedRate: null,
     maxDiscountAmount: null,
     minimumPrice: null,
-    startAt: formatDateToLocalDateTime(new Date(Date.now() + 30000)), // 현재 시각 + 30초
-    expiredAt: null,
+    startAt: formatDateToLocalDateTimeKST(new Date(Date.now() + 30000)), // 현재 시각 + 30초
+    expiredAt: null, // 공통으로 사용
+    couponLifetime: null, // DURATION_BASED에서만 사용
     maxIssueCount: null,
 });
 
