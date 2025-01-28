@@ -23,7 +23,7 @@
       </v-row>
   
       <!-- 수량 선택 -->
-      <v-row justify="center" align="center" class="quantity-selector mb-6">
+      <v-row justify="center" align-center class="quantity-selector mb-6">
         <v-btn icon @click="decrementQuantity">
           <v-icon>mdi-minus</v-icon>
         </v-btn>
