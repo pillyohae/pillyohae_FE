@@ -2,42 +2,29 @@ name: git push into another repo to deploy to vercel
 
 on:
   push:
-    branches: [main] # Organization 레포지토리의 main 브랜치가 변경될 때 실행
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: pandoc/latex
     steps:
-      - name: Checkout Organization Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Git
-        run: |
-          git config --global user.email "${{ secrets.OFFICIAL_ACCOUNT_EMAIL }}"
-          git config --global user.name "Weseunghyun"
-
-      - name: Clone Organization Repository (출력 디렉토리 생성)
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        run: |
-          mkdir output
-          git clone https://oauth2:${API_TOKEN_GITHUB}@github.com/pillyohae/pillyohae_FE.git output
-          cd output
-          git checkout main
-          git pull origin main
-
-      - name: Push to Personal Repository (Vercel과 연동된 레포지토리)
+      - uses: actions/checkout@v2
+      - name: Install mustache (to update the date)
+        run: apk add ruby && gem install mustache
+      - name: creates output
+        run: sh ./build.sh
+      - name: Pushes to another repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source-directory: 'output' # Organization 코드가 복사된 폴더
+          source-directory: 'output'
           destination-github-username: Weseunghyun
           destination-repository-name: Pillyohae_FE
           user-email: ${{ secrets.OFFICIAL_ACCOUNT_EMAIL }}
-          commit-message: "Update from Organization repo"
+          commit-message: ${{ github.event.commits[0].message }}
           target-branch: main
-
       - name: Test get variable exported by push-to-another-repository
         run: echo $DESTINATION_CLONED_DIRECTORY
