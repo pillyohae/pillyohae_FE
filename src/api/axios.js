@@ -3,7 +3,7 @@ import axios from "axios";
 
 //axios 인스턴스를 생성하여 기본 설정을 적용
 const instance = axios.create({
-    baseURL: 'http://localhost:8080', //api 의 기본 URL 나중에 환경변수로 설정
+    baseURL: import.meta.env.VITE_API_BASE_URL, // 환경 변수 사용
     timeout: 5000, //요청시간 5초 안에 완료되지 않으면 에러
     headers: {
         'Content-Type' : 'application/json', //기본적으로 요청에 json 데이터를 보내도록 설정

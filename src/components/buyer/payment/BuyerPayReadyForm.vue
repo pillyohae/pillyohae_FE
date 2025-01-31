@@ -203,8 +203,8 @@ const openPayment = async () => {
       customerMobilePhone: props.deliveryInfo.phoneNumber, // 고객 전화번호
       clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
       customerKey: 'vxkGzcNE9r_YudzBIOMfJas',
-      successUrl: 'http://localhost:5173/success', // 결제 성공 URL
-      failUrl: 'http://localhost:5173/fail', // 결제 실패 URL
+      successUrl: `${import.meta.env.VITE_BASE_URL}/success`, // 환경 변수 사용
+      failUrl: `${import.meta.env.VITE_BASE_URL}/fail`        // 환경 변수 사용
     });
 
     // 결제 창 열기
