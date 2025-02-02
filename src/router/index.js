@@ -28,11 +28,12 @@ import SurveyRecommendationView from "../views/buyer/survey/SurveyRecommendation
 import AdminMainView from "../views/admin/AdminMainView.vue";
 import AdminCouponView from "../views/admin/AdminCouponView.vue";
 import AdminCouponRegistView from "../views/admin/AdminCouponRegistView.vue";
+import MainView from "../views/MainView.vue";
 
 //각 경로와 해당 경로에 대해 연결된 컴포넌트(페이지) 를 정의
 //이것을 보고 라우터가 페이지 이동을 하는 것
 const routes = [
-    { path: '/', redirect: '/login' }, //우선 기본 경로를 로그인 페이지로
+    { path: '/', name : 'Main', component: MainView }, //우선 기본 경로를 로그인 페이지로
     { path: '/login', name: 'Login', component: LoginView },
     { path: '/signup', name: 'Signup', component: SignupView },
     { path: '/buyer', name: 'BuyerMain', component: BuyerMainView },
