@@ -4,7 +4,7 @@
 
 //Vue 애플리케이션을 생성하는 함수를 vue 에서 가져옴
 import { createApp } from 'vue'
-
+import { createPinia } from 'pinia';
 //애플리케이션의 최상위 컴포넌트로 모든 화면의 뼈대 역할
 import App from './App.vue'
 
@@ -30,14 +30,14 @@ const vuetify = createVuetify({
 
 //Vue 애플리케이션 생성
 const app = createApp(App);
-
+const pinia = createPinia();
 // user는 Vue 애플리케이션에 플러그인(라이브러리)를 적용하는 함수.
 // Vue Router를 애플리케이션에 추가
 app.use(router);
 
 //Vuetify 애플리케이션에 추가
 app.use(vuetify);
-
+app.use(pinia);
 //애플리케이션을 #app 요소에 마운트함. HTML 파일의 특정 요소에 연결하는 과정
 //index.html 의 <div id="app"><div> 인 요소를 Vue 애플리케이션이 사용하는 영역으로 지정
 //App.vue 즉 Vue 애플리케이션의 내용이 이 <div> 안에 렌더링 되는 것

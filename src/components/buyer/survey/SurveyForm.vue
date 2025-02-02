@@ -31,10 +31,8 @@
           <v-card-text>
             <!-- 설문 분석 날짜 -->
             <p>분석 날짜: {{ formatDate(survey.createAt) }}</p>
-            <!-- 사용자가 선택한 카테고리 -->
-            <p>선택한 카테고리: {{ survey.categories }}</p>
             <!-- 상태 표시 -->
-            <v-chip color="green" text-color="white" small>분석완료</v-chip>
+            <v-chip class="mt-4" color="green" text-color="white" small>분석완료</v-chip>
           </v-card-text>
 
           <!-- 설문 상세 보기 버튼 -->

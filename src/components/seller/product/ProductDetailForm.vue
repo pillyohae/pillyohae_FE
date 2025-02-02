@@ -3,7 +3,6 @@
     <!-- 이미지 캐러셀 섹션 -->
     <v-row justify="center" class="my-4">
       <v-carousel hide-delimiters>
-        <!-- 상품 이미지들을 캐러셀 형식으로 표시 -->
         <v-carousel-item
           v-for="(image, index) in sortedImages"
           :key="index"
@@ -15,11 +14,8 @@
     <!-- 상품 기본 정보 섹션 -->
     <v-row justify="center" class="my-4">
       <v-col cols="12" class="text-center">
-        <!-- 상품명 -->
         <h1 class="product-name">{{ product.productName }}</h1>
-        <!-- 회사명 -->
         <p class="company-name">{{ product.companyName }}</p>
-        <!-- 가격 -->
         <p class="price">{{ formatPrice(product.price) }}</p>
       </v-col>
     </v-row>
@@ -27,31 +23,38 @@
     <!-- 상세정보 탭 -->
     <v-row justify="center" class="my-4">
       <v-col cols="12" md="8">
-        <!-- 상세정보 탭 버튼 -->
         <v-tabs v-model="tab" color="green">
-          <v-tab>상세정보</v-tab>
+          <v-tab :value="0">상품 설명</v-tab>
+          <v-tab :value="1">카테고리</v-tab>
+          <v-tab :value="2">영양 성분</v-tab>
         </v-tabs>
-        <!-- 탭 내부 내용 -->
-        <v-tabs-items v-model="tab">
-          <v-tab-item>
-            <!-- 상품 설명 -->
-            <p class="product-description">
-              {{ product.description }}
-            </p>
-            <!-- 카테고리 정보 -->
-            <h3 class="category-title">카테고리</h3>
-            <p>{{ product.category }}</p>
-          </v-tab-item>
-        </v-tabs-items>
+
+        <!-- 탭 클릭 시 해당 내용만 보이도록 설정 -->
+        <div v-if="tab === 0">
+          <h3 class="section-title">상품 설명</h3>
+          <p class="product-description">{{ product.description }}</p>
+        </div>
+
+        <div v-if="tab === 1">
+          <h3 class="section-title">카테고리</h3>
+          <p>{{ product.category?.name || '정보 없음' }}</p>
+        </div>
+
+        <div v-if="tab === 2">
+          <h3 class="section-title">영양 성분</h3>
+          <p>{{ product.nutrient?.name || '정보 없음' }}</p>
+          <p class="nutrient-description">{{ product.nutrient?.description || '' }}</p>
+        </div>
       </v-col>
     </v-row>
   </v-container>
+
 </template>
 
 <script setup>
 import { defineProps, ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
-// 부모 컴포넌트에서 전달받은 상품 데이터
 const props = defineProps({
   product: {
     type: Object,
@@ -59,21 +62,21 @@ const props = defineProps({
   },
 });
 
-// 탭 상태 관리 (기본적으로 첫 번째 탭 선택)
-const tab = ref(0);
+const tab = ref(0); // 선택된 탭 값 (기본값: 상품 설명 탭)
 
-// 상품 이미지들을 정렬 (position 속성 기준으로 정렬)
+// 상품 이미지 정렬
 const sortedImages = computed(() => {
   return [...props.product.images].sort((a, b) => a.position - b.position);
 });
 
-// 가격을 한국 원(KRW) 형식으로 변환하는 함수
+// 가격 형식 변환
 const formatPrice = (price) => {
   return new Intl.NumberFormat('ko-KR', {
     style: 'currency',
     currency: 'KRW',
   }).format(price);
 };
+
 </script>
 
 <style scoped>
@@ -105,8 +108,9 @@ const formatPrice = (price) => {
   margin-bottom: 20px;
 }
 
-/* 카테고리 제목 스타일 */
-.category-title {
+/* 섹션 타이틀 스타일 */
+.section-title {
+  font-size: 18px;
   font-weight: bold;
   margin-top: 20px;
 }

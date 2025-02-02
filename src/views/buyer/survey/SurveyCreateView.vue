@@ -10,11 +10,13 @@
       </v-row>
   
       <!-- 설문 생성 Form -->
-      <survey-create-form @submitSurvey="submitSurvey" />
+      <!--<survey-create-form @submitSurvey="submitSurvey" />-->
+      <multi-step-form></multi-step-form>
     </v-container>
   </template>
   
   <script setup>
+  import MultiStepForm from '../../../components/buyer/survey/MultiStepForm.vue';
   import SurveyCreateForm from '../../../components/buyer/survey/SurveyCreateForm.vue';
   import api from '../../../api/axios';
   

@@ -1,6 +1,6 @@
 <template>
-  <!-- 전체 컨테이너 -->
-  <v-container class="pb-10"> <!-- 하단에 여백 추가 -->
+   <v-app>
+    <v-container class="pb-16"> <!-- 하단 버튼 공간 확보 -->
     
     <!-- 상품 이미지 캐러셀 -->
     <!-- v-carousel: 상품 이미지를 슬라이드 형태로 보여주는 Vuetify 컴포넌트 -->
@@ -43,32 +43,49 @@
       </v-btn>
     </v-row>
 
-    <!-- 상세 정보 및 카테고리 -->
-    <v-row justify="center" class="mb-6">
+    <!-- 상세정보 탭 -->
+    <v-row justify="center" class="my-4">
       <v-col cols="12" md="8">
-        <v-card>
-          <v-card-title>상세정보</v-card-title>
-          <v-card-text>
-            <!-- 상품 설명 -->
-            <p class="product-description">{{ product.description }}</p>
-            <!-- 상품 카테고리 -->
-            <h3 class="category-title">카테고리</h3>
-            <p>{{ product.category }}</p>
-          </v-card-text>
-        </v-card>
+        <v-tabs v-model="tab" color="green">
+          <v-tab :value="0">상품 설명</v-tab>
+          <v-tab :value="1">카테고리</v-tab>
+          <v-tab :value="2">영양 성분</v-tab>
+        </v-tabs>
+
+        <!-- 탭 클릭 시 해당 내용만 보이도록 설정 -->
+        <div v-if="tab === 0">
+          <h3 class="section-title">상품 설명</h3>
+          <p class="product-description">{{ product.description }}</p>
+        </div>
+
+        <div v-if="tab === 1">
+          <h3 class="section-title">카테고리</h3>
+          <p>{{ product.category?.name || '정보 없음' }}</p>
+        </div>
+
+        <div v-if="tab === 2">
+          <h3 class="section-title">영양 성분</h3>
+          <p>{{ product.nutrient?.name || '정보 없음' }}</p>
+          <p class="nutrient-description">{{ product.nutrient?.description || '' }}</p>
+        </div>
       </v-col>
     </v-row>
-
-    <!-- 버튼 영역 -->
-    <v-row justify="center" class="action-buttons fixed-bottom">
-      <!-- 구매하기 버튼 -->
-      <!-- @click: handlePurchase 함수 호출 -->
-      <v-btn color="green" block @click="handlePurchase">구매하기</v-btn>
-      <!-- 장바구니 담기 버튼 -->
-      <!-- @click: addToCart 함수 호출 -->
-      <v-btn color="primary" block @click="addToCart">장바구니 담기</v-btn>
-    </v-row>
   </v-container>
+
+    <!-- 하단 고정 버튼 -->
+    <v-footer class="footer-container" app>
+      <v-container>
+        <v-row>
+          <v-col cols="6">
+            <v-btn color="green" block @click="handlePurchase">구매하기</v-btn>
+          </v-col>
+          <v-col cols="6">
+            <v-btn color="primary" block @click="addToCart">장바구니 담기</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-footer>
+   </v-app>
 </template>
 
 <script setup>
@@ -78,6 +95,7 @@ import { useRouter } from "vue-router"; // 페이지 이동을 위한 Vue Router
 
 // Vue Router 인스턴스 생성
 const router = useRouter();
+const tab = ref(0); // 선택된 탭 값 (기본값: 상품 설명 탭)
 
 // 부모 컴포넌트에서 전달받는 props 정의
 const props = defineProps({

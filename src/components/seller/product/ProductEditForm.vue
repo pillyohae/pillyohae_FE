@@ -9,18 +9,25 @@
     <!-- 상품 설명 -->
     <v-textarea v-model="product.description" label="영양제 설명 *" required></v-textarea>
 
-    <!-- 카테고리 선택 -->
-    <h3>카테고리 선택 *</h3>
-    <v-btn
-      v-for="category in categories"
-      :key="category"
-      :color="product.category === category ? 'green' : 'grey'"
-      outlined
-      class="mr-2 mb-12"
-      @click="product.category = category"
-    >
-      {{ category }}
-    </v-btn>
+     <!-- 카테고리 선택 -->
+     <v-select
+      v-model="product.categoryId"
+      :items="categories"
+      item-title="name"
+      item-value="categoryId"
+      label="카테고리 선택 *"
+      outlined dense required
+    ></v-select>
+
+    <!-- 영양소 선택 -->
+    <v-select
+      v-model="product.nutrientId"
+      :items="nutrients"
+      item-title="name"
+      item-value="nutrientId"
+      label="영양소 선택 *"
+      outlined dense required
+    ></v-select>
 
      <!-- 페르소나 이미지 -->
      <h3>
@@ -109,10 +116,21 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  categories: {
+    type: Array,
+    required: true,
+  },
+  nutrients: {
+    type: Array,
+    required: true,
+  },
 });
 
-const product = reactive({ ...props.initialProduct });
-const categories = ref(['멀티비타민', '관절/뼈', '눈 건강', '간 건강', '스트레스', '수면', '장 건강']);
+const product = reactive({
+  ...props.initialProduct,
+  categoryId: props.initialProduct.categoryId || null,
+  nutrientId: props.initialProduct.nutrientId || null,
+});
 
 const personaImage = ref(product.images.find(img => img.position === 0)?.imageUrl || null);
 const mainImagePreview = ref(product.images.find(img => img.position === 1)?.imageUrl || null);
