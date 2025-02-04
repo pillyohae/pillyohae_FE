@@ -196,7 +196,7 @@ const openPayment = async () => {
     // 결제 페이지로 전달할 쿼리 파라미터 구성
     const queryParams = new URLSearchParams({
       orderId, // 주문 ID
-      orderName: `영양제_${props.selectedProducts.length}_건`, // 주문 이름
+      orderName: orderResponse.data.orderInfo.orderName, // 주문 이름
       totalAmount: props.totalPrice - discountAmount.value, // 최종 결제 금액
       customerName: props.deliveryInfo.name, // 고객 이름
       customerEmail: props.deliveryInfo.email, // 고객 이메일
