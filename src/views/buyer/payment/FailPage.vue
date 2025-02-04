@@ -30,6 +30,8 @@
   // 팝업 창 닫기 함수
   const handleClose = () => {
     if (window.opener) {
+      // 부모 창 경로 변경
+      window.opener.location.href = '/buyer';
       // 팝업 창이면 닫기
       window.close();
     } else {

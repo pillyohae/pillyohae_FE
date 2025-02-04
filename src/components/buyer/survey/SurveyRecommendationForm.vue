@@ -1,7 +1,44 @@
 <template>
   <v-container>
     <!-- 페이지 제목 -->
+      <!-- 페이지 제목 및 이전 버튼 -->
+    <v-row align-center class="mb-4">
+      <v-btn icon @click="goBack">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
     <h1 class="text-h5 font-weight-bold mb-6">영양성분 추천 결과</h1>
+    </v-row>
+
+    <!-- 설문 상세 정보 -->
+    <v-card outlined class="mb-6">
+      <v-card-title class="font-weight-bold">📋 설문 정보</v-card-title>
+      <v-card-text v-if="surveyDetails">
+        <p><strong>성별:</strong> {{ surveyDetails.gender || "정보 없음" }}</p>
+        <p><strong>나이:</strong> {{ surveyDetails.age || "정보 없음" }}세</p>
+        <p><strong>키:</strong> {{ surveyDetails.height || "정보 없음" }}cm</p>
+        <p><strong>몸무게:</strong> {{ surveyDetails.weight || "정보 없음" }}kg</p>
+        <p><strong>건강 목표:</strong> {{ surveyDetails.healthGoals || "없음" }}</p>
+        <p><strong>건강 상태:</strong> {{ surveyDetails.healthCondition || "없음" }}</p>
+
+        <h3 class="font-weight-bold mt-4">🧑‍⚕️ 생활 습관</h3>
+        <p><strong>흡연 여부:</strong> {{ surveyDetails.lifestyle?.smoking || "정보 없음" }}</p>
+        <p><strong>수면의 질:</strong> {{ surveyDetails.lifestyle?.sleepQuality || "정보 없음" }}</p>
+        <p><strong>운동 빈도:</strong> {{ surveyDetails.lifestyle?.exercise || "정보 없음" }}</p>
+        <p><strong>스트레스 수준:</strong> {{ surveyDetails.lifestyle?.stressLevel || "정보 없음" }}</p>
+      </v-card-text>
+      <v-card-text v-else>
+        🔄 설문 정보를 불러오는 중...
+      </v-card-text>
+    </v-card>
+
+    <!-- AI 추천 이유 -->
+    <v-card outlined class="mb-6">
+      <v-card-title class="font-weight-bold">🤖 AI 추천 이유</v-card-title>
+      <v-card-text v-if="surveyDetails">
+        <span v-if="typedText">{{ typedText }}</span>
+        <span v-else>🔄 AI 추천 이유를 불러오는 중...</span>
+      </v-card-text>
+    </v-card>
 
     <!-- 추천 영양성분 목록 -->
     <v-row>
@@ -40,7 +77,11 @@
 </template>
 
 <script setup>
+import { defineProps, ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import api from "../../../api/axios"; // 서버와 통신하기 위한 Axios 모듈
+
+const router = useRouter();
 
 // 부모 컴포넌트에서 전달받는 props 정의
 const props = defineProps({
@@ -49,7 +90,35 @@ const props = defineProps({
     type: Array, // 배열 타입
     required: true, // 필수 값
   },
+  surveyDetails: {
+    type: Object,
+    required: false,
+    default: () => ({}), // 기본값 설정
+  },
 });
+
+// AI 추천 이유 타이핑 효과 관련 변수
+const typedText = ref("");
+const typingIndex = ref(0);
+// AI 추천 이유를 안전하게 가져오는 computed 속성
+const fullText = computed(() => props.surveyDetails?.recommendationReason || "추천 이유를 불러올 수 없습니다.");
+
+// AI 추천 이유 타이핑 효과 함수
+const typeAIReason = () => {
+  if (typingIndex.value < fullText.value.length) {
+    typedText.value += fullText.value[typingIndex.value];
+    typingIndex.value++;
+    setTimeout(typeAIReason, 30); // 한 글자씩 30ms 간격으로 출력
+  }
+};
+
+// 컴포넌트 마운트 시 AI 추천 이유 타이핑 효과 실행
+onMounted(() => {
+  if (fullText.value) {
+    setTimeout(typeAIReason, 500); // 0.5초 후 시작
+  }
+});
+
 
 // 가격 포맷팅 함수
 // - 가격 데이터를 '1,000원' 형식으로 변환
@@ -73,6 +142,11 @@ const addAllToCart = async () => {
     console.error("장바구니 추가 실패:", error.response?.data || error.message);
     alert("장바구니 추가에 실패했습니다.");
   }
+};
+
+// 이전 화면으로 돌아가기
+const goBack = () => {
+  router.back();
 };
 </script>
 

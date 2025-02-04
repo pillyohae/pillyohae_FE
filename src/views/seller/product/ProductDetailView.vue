@@ -58,7 +58,7 @@ const goToEdit = () => {
   router.push({
     name: 'ProductEditPage',
     params: { productId: product.value.productId },
-    state: { productData: formattedProduct }, // ✅ query가 아닌 state로 데이터 전달
+    state: { productData: formattedProduct }, // query가 아닌 state로 데이터 전달
   });
 };
 

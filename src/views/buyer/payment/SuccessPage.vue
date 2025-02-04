@@ -50,6 +50,7 @@ const confirm = async () => {
     } else {
       // 결제 성공 처리
       console.log('결제 성공:', response.data);
+      await api.delete('/carts');
     }
   } catch (error) {
     // 결제 확인 중 오류 처리

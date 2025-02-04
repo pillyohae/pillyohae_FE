@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" @submit.prevent="emitSubmit">
-    <!-- 상품 이름 -->
+    <!-- 다른 코드 생략.. -->
     <v-text-field v-model="product.productName" label="영양제 이름 *" required />
 
     <!-- 회사 이름 -->
@@ -9,52 +9,23 @@
     <!-- 상품 설명 -->
     <v-textarea v-model="product.description" label="영양제 설명 *" required></v-textarea>
 
-     <!-- 카테고리 선택 -->
-     <v-select
-      v-model="product.categoryId"
-      :items="categories"
-      item-title="name"
-      item-value="categoryId"
-      label="카테고리 선택 *"
-      outlined dense required
-    ></v-select>
+    <!-- 카테고리 선택 -->
+    <v-select v-model="product.categoryId" :items="categories" item-title="name" item-value="categoryId"
+      label="카테고리 선택 *" outlined dense required></v-select>
 
     <!-- 영양소 선택 -->
-    <v-select
-      v-model="product.nutrientId"
-      :items="nutrients"
-      item-title="name"
-      item-value="nutrientId"
-      label="영양소 선택 *"
-      outlined dense required
-    ></v-select>
+    <v-select v-model="product.nutrientId" :items="nutrients" item-title="name" item-value="nutrientId" label="영양소 선택 *"
+      outlined dense required></v-select>
 
-     <!-- 페르소나 이미지 -->
-     <h3>
+    <!-- 페르소나 이미지 -->
+    <h3>
       페르소나 이미지
-      <v-btn
-        small
-        color="blue"
-        @click="emitPersonaRegeneration"
-        :disabled="isLoading"
-      >
+      <v-btn small color="blue" @click="handlePersonaRegeneration" :disabled="isLoading">
         재생성
-        <v-progress-circular
-          v-if="isLoading"
-          indeterminate
-          size="20"
-          color="green"
-          class="ml-2"
-        />
+        <v-progress-circular v-if="isLoading" indeterminate size="20" color="green" class="ml-2" />
       </v-btn>
     </h3>
-    <v-img
-      v-if="personaImage"
-      :src="personaImage"
-      alt="페르소나 이미지"
-      height="150"
-      class="mb-4"
-    />
+    <v-img v-if="personaImage" :src="personaImage + '?ts=' + Date.now()"  alt="페르소나 이미지" height="150" class="mb-4" />
 
     <!-- 메인 이미지 -->
     <h3>메인 이미지 업로드 *</h3>
@@ -62,7 +33,8 @@
     <v-row class="mb-12">
       <v-col cols="auto" v-if="mainImagePreview">
         <v-img :src="mainImagePreview" alt="메인 이미지 미리보기" height="100" />
-        <v-btn small color="red" @click="removeMainImage(product.images.find(img => img.position === 1)?.imageId)">삭제</v-btn>
+        <v-btn small color="red"
+          @click="removeMainImage(product.images.find(img => img.position === 1)?.imageId)">삭제</v-btn>
       </v-col>
     </v-row>
 
@@ -92,16 +64,12 @@
 </template>
 
 <script setup>
-import { reactive, ref, defineProps, defineEmits } from 'vue';
+import { reactive, ref, defineProps, defineEmits, watch } from 'vue';
 import draggable from "vuedraggable";
 import api from "../../../api/axios";
 
-const emit = defineEmits(['regeneratePersona', 'submitProduct', 'loadingStateUpdate']);
-
-const emitPersonaRegeneration = () => {
-  emit('regeneratePersona', product.productId);
-  emit('loadingStateUpdate', true); // 로딩 시작 알림
-};
+const emit = defineEmits(['submitProduct']);
+const isLoading = ref(false);
 
 const emitSubmit = () => {
   emit('submitProduct', { ...product });
@@ -111,10 +79,6 @@ const props = defineProps({
   initialProduct: {
     type: Object,
     required: true,
-  },
-  isLoading: {
-    type: Boolean,
-    default: false,
   },
   categories: {
     type: Array,
@@ -135,6 +99,38 @@ const product = reactive({
 const personaImage = ref(product.images.find(img => img.position === 0)?.imageUrl || null);
 const mainImagePreview = ref(product.images.find(img => img.position === 1)?.imageUrl || null);
 const imagePreviews = ref(product.images.filter(img => img.position > 1));
+
+// 페르소나 이미지 재생성 로직
+const handlePersonaRegeneration = async () => {
+  isLoading.value = true;
+  try {
+    const response = await api.post(`/products/${product.productId}/ai-image`, {}, { timeout: 0 });
+    
+    const newPersonaImage = response.data.imageUrl;
+
+    // 1. product.images 업데이트 (반응성 유지)
+    const existingPersonaIndex = product.images.findIndex(img => img.position === 0);
+    if (existingPersonaIndex !== -1) {
+      product.images[existingPersonaIndex].imageUrl = newPersonaImage;
+    } else {
+      product.images.push({ 
+        imageId: null, 
+        imageUrl: newPersonaImage, 
+        position: 0 
+      });
+    }
+
+    // 2. personaImage ref 강제 갱신 (캐시 방지)
+    personaImage.value = newPersonaImage + `?${Date.now()}`; // 쿼리 파라미터 추가
+  
+    alert('페르소나 이미지가 성공적으로 재생성되었습니다.');
+  } catch (error) {
+    console.error('페르소나 이미지 재생성 실패:', error.response?.data || error.message);
+    alert('페르소나 이미지 재생성에 실패했습니다.');
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 // 메인 이미지 업로드
 const handleMainImageSelection = async (event) => {
