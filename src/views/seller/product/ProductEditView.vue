@@ -9,7 +9,7 @@
     </v-row>
 
     <!-- 상품 수정 Form -->
-    <product-edit-form v-if="initialProduct" @submitProduct="updateProduct" :initialProduct="initialProduct"
+    <product-edit-form v-if="product" @submitProduct="updateProduct" :initialProduct="product"
       :categories="categories" :nutrients="nutrients" />
   </v-container>
 </template>
@@ -22,11 +22,10 @@ import api from '../../../api/axios';
 
 const route = useRoute();
 const router = useRouter();
-const isLoading = ref(false);
 const categories = ref([]);
 const nutrients = ref([]);
-// `route.state`에서 안전하게 데이터 가져오기
-const initialProduct = ref(route.state?.productData || null);
+const product = ref(null);
+
 
 //  API를 통해 카테고리 및 영양소 목록 가져오기
 const fetchCategoriesAndNutrients = async () => {
@@ -42,23 +41,27 @@ const fetchCategoriesAndNutrients = async () => {
   }
 };
 
-// `initialProduct`가 없을 경우 상품 상세정보를 API에서 다시 가져오기
+// 상품 상세 정보를 가져오는 함수 (productId를 기반으로)
 const fetchProductDetails = async () => {
-  if (!initialProduct.value) {
-    try {
-      const productId = route.params.productId;
-      const response = await api.get(`/products/${productId}`);
-      initialProduct.value = {
-        ...response.data,
-        categoryId: response.data.category?.categoryId || null,
-        nutrientId: response.data.nutrient?.nutrientId || null,
-      };
-    } catch (error) {
-      console.error('상품 정보를 불러오는 데 실패했습니다.', error);
-      alert('상품 정보를 불러오지 못했습니다.');
-      router.push('/seller/product');
-    }
+  const productId = route.params.productId;
+  if (!productId) {
+    alert('상품 ID가 없습니다.');
+    router.push('/seller/product');
+    return;
   }
+
+  try {
+    const response = await api.get(`/products/${productId}`);
+    product.value = {
+      ...response.data,
+      categoryId: response.data.category?.categoryId || null,
+      nutrientId: response.data.nutrient?.nutrientId || null,
+    };
+  } catch (error) {
+    console.error('상품 정보를 불러오는 데 실패했습니다.', error);
+    alert('상품 정보를 불러오지 못했습니다.');
+    router.push('/seller/product');
+  } 
 };
 
 // 초기 데이터 불러오기

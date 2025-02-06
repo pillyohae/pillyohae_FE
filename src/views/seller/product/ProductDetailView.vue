@@ -45,20 +45,13 @@ const fetchProductDetails = async () => {
   }
 };
 
-// 수정 페이지로 이동하는 함수
+// 수정 페이지로 이동하는 함수 (productId만 전달)
 const goToEdit = () => {
   if (!product.value) return;
-
-  const formattedProduct = {
-    ...product.value,
-    categoryId: product.value.category?.categoryId || null,
-    nutrientId: product.value.nutrient?.nutrientId || null,
-  };
-
+  
   router.push({
     name: 'ProductEditPage',
-    params: { productId: product.value.productId },
-    state: { productData: formattedProduct }, // query가 아닌 state로 데이터 전달
+    params: { productId: product.value.productId }
   });
 };
 

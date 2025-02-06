@@ -1,9 +1,6 @@
 <template>
     <v-container>
-        <!-- 
-          주문 정보 섹션
-          - 주문한 내용, 주문일, 주문 번호 표시
-        -->
+        <!-- 주문 정보 섹션 -->
         <v-row>
             <v-col cols="12" md="6">
                 <v-card outlined class="mb-4">
@@ -16,28 +13,20 @@
                 </v-card>
             </v-col>
 
-            <!-- 
-              배송 정보 섹션
-              - 수령인, 연락처, 주소 정보 표시
-            -->
+            <!-- 배송 정보 섹션 -->
             <v-col cols="12" md="6">
                 <v-card outlined class="mb-4">
                     <v-card-title>배송 정보</v-card-title>
                     <v-card-text>
                         <p><strong>수령인:</strong> {{ orderInfo.shippingAddress.receiverName }}</p>
                         <p><strong>연락처:</strong> {{ orderInfo.shippingAddress.phoneNumber }}</p>
-                        <p><strong>주소:</strong> {{ orderInfo.shippingAddress.roadAddress }} {{
-                            orderInfo.shippingAddress.detailAddress }}</p>
+                        <p><strong>주소:</strong> {{ orderInfo.shippingAddress.roadAddress }} {{ orderInfo.shippingAddress.detailAddress }}</p>
                     </v-card-text>
                 </v-card>
             </v-col>
         </v-row>
 
-        <!-- 
-          주문 상품 섹션
-          - 주문한 상품 목록을 표시
-          - 진행 상태를 보여주는 프로그레스 바 포함
-        -->
+        <!-- 주문 상품 섹션 -->
         <v-card outlined class="mb-4">
             <v-card-title>주문 상품</v-card-title>
             <v-card-text>
@@ -65,6 +54,15 @@
                             </template>
                         </v-progress-linear>
                         <p class="mt-2">{{ statusText(product.orderProductStatus) }}</p>
+
+                        <!-- 환불 요청 버튼 (배송 완료 상태일 때만 활성화) -->
+                        <v-btn 
+                            v-if="product.orderProductStatus === 'DELIVERED'"
+                            outlined color="green"
+                            class="mt-2"
+                            @click="requestRefund(product)">
+                            환불 요청
+                        </v-btn>
                     </v-col>
                 </v-row>
                 <!-- 총 결제 금액 표시 -->
@@ -72,18 +70,22 @@
             </v-card-text>
         </v-card>
 
-        <!-- 
-          하단 버튼 (주문 취소 및 환불 요청)
-        -->
+        <!-- 주문 취소 버튼 -->
         <v-row class="justify-space-between">
-            <v-btn outlined color="red" class="mr-4">주문 취소</v-btn>
-            <v-btn outlined color="green">환불 요청</v-btn>
+            <v-btn 
+                outlined color="red" 
+                class="mr-4"
+                :disabled="!isCancelable"
+                @click="cancelOrder">
+                주문 취소
+            </v-btn>
         </v-row>
     </v-container>
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, computed, ref } from 'vue';
+import api from "../../../api/axios";
 
 // 부모 컴포넌트에서 전달받는 주문 정보 및 상품 목록 props 정의
 const props = defineProps({
@@ -97,8 +99,10 @@ const props = defineProps({
     },
 });
 
+// 주문 상품 목록을 반응형으로 유지하기 위해 ref로 변환
+const orderProducts = ref([...props.orderProducts]);
+
 // 날짜 포맷 함수
-// - ISO 형식의 날짜 문자열을 'YYYY-MM-DD HH:MM' 형식으로 변환
 const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
@@ -113,32 +117,61 @@ const formatDate = (dateString) => {
 // 주문 상태에 따른 진행률 계산 함수
 const progressValue = (status) => {
     switch (status) {
-        case 'CHECK_ORDER': // 주문 확인 중
-            return 25;
-        case 'READY_FOR_SHIPMENT': // 배송 준비 완료
-            return 50;
-        case 'SHIPPED': // 배송 중
-            return 75;
-        case 'DELIVERED': // 배송 완료
-            return 100;
-        default:
-            return 0;
+        case 'CHECK_ORDER': return 25; // 주문 확인 중
+        case 'READY_FOR_SHIPMENT': return 50; // 배송 준비 완료
+        case 'SHIPPED': return 75; // 배송 중
+        case 'DELIVERED': return 100; // 배송 완료
+        case 'RETURN_REQUESTED': return 100; // 환불 요청됨
+        case 'RETURNED': return 100; // 반품 완료
+        default: return 0;
     }
 };
 
 // 주문 상태를 텍스트로 변환하는 함수
 const statusText = (status) => {
     switch (status) {
-        case 'CHECK_ORDER':
-            return '주문 접수 중';
-        case 'READY_FOR_SHIPMENT':
-            return '배송 준비 완료';
-        case 'SHIPPED':
-            return '배송 중';
-        case 'DELIVERED':
-            return '배송 완료';
-        default:
-            return '상태 없음';
+        case 'CHECK_ORDER': return '주문 접수 중';
+        case 'READY_FOR_SHIPMENT': return '배송 준비 완료';
+        case 'SHIPPED': return '배송 중';
+        case 'DELIVERED': return '배송 완료';
+        case 'RETURN_REQUESTED': return '환불 요청됨';
+        case 'RETURNED': return '환불 완료';
+        default: return '상태 없음';
+    }
+};
+
+// 모든 상품이 주문 취소 가능한 상태인지 확인하는 computed 속성
+const isCancelable = computed(() => {
+    return orderProducts.value.every(product => product.orderProductStatus === 'CHECK_ORDER' || product.orderProductStatus === 'READY_FOR_SHIPMENT');
+});
+
+// 주문 취소 요청 함수
+const cancelOrder = async () => {
+    try {
+        await api.put(`/orders/${props.orderInfo.orderId}/cancel`);
+        alert("주문이 취소되었습니다.");
+        location.reload(); // 페이지 새로고침하여 변경 사항 반영
+    } catch (error) {
+        console.error("주문 취소 실패:", error.response?.data || error.message);
+        alert("주문 취소에 실패했습니다.");
+    }
+};
+
+// 개별 상품 환불 요청 함수
+const requestRefund = async (product) => {
+    try {
+        await api.put(`/orders/${props.orderInfo.orderId}/orderProducts/${product.orderItemId}`);
+        
+        // 상태 업데이트: 환불 요청됨으로 변경
+        const updatedProducts = orderProducts.value.map(p =>
+            p.orderItemId === product.orderItemId ? { ...p, orderProductStatus: "RETURN_REQUESTED" } : p
+        );
+        orderProducts.value = updatedProducts;
+
+        alert(`"${product.orderItemName}" 상품의 환불 요청이 완료되었습니다.`);
+    } catch (error) {
+        console.error("환불 요청 실패:", error.response?.data || error.message);
+        alert("환불 요청에 실패했습니다.");
     }
 };
 </script>
