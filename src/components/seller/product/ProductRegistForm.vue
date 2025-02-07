@@ -96,6 +96,7 @@ const mainImage = ref(null);
 const mainImagePreview = ref(null);
 const images = ref([]);
 const imagePreviews = ref([]);
+const isLoading = ref(false); // 로딩 상태 추가
 
 // 서버에서 카테고리 및 영양소 목록 가져오기
 const fetchCategoryAndNutrients = async () => {
@@ -177,7 +178,7 @@ const handleSubmit = async () => {
             nutrientIds: [product.nutrientId], // 서버에서 nutrientIds 배열을 요구하면 배열로 변환
         };
 
-        const productResponse = await api.post('/products', productData);
+        const productResponse = await api.post('/products', productData, { timeout: 0 });
         const productId = productResponse.data.productId;
 
         // 메인 이미지 업로드
